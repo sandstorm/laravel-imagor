@@ -10,16 +10,24 @@ class ImgProxyServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
         $package
             ->name('laravel-imgproxy')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laravel_imgproxy_table')
-            ->hasCommand(ImgProxyCommand::class);
+            ->hasConfigFile();
+    }
+
+    public function register()
+    {
+        parent::register();
+
+        $this->app->singleton(ImgProxy::class, function ($app) {
+            return new ImgProxy();
+        });
+
+        $this->loadHelpers();
+    }
+
+    protected function loadHelpers()
+    {
+        require_once __DIR__ . '/helpers.php';
     }
 }

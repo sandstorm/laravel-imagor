@@ -28,6 +28,11 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
+        config()->set('imgproxy.endpoint', 'http://localhost:8080');
+        config()->set('imgproxy.key', '');
+        config()->set('imgproxy.salt', '');
+        config()->set('imgproxy.default_preset', 'default');
+
         /*
         $migration = include __DIR__.'/../database/migrations/create_laravel-imgproxy_table.php.stub';
         $migration->up();

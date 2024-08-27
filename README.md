@@ -5,15 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/imsus/laravel-imgproxy/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/imsus/laravel-imgproxy/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/imsus/laravel-imgproxy.svg?style=flat-square)](https://packagist.org/packages/imsus/laravel-imgproxy)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-imgproxy.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-imgproxy)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+This package provides a Laravel integration for ImgProxy, allowing you to easily generate and manipulate image URLs. It supports insecure, signed, and encrypted URL generation, and includes a helper function for quick usage.
 
 ## Installation
 
@@ -27,7 +19,6 @@ You can publish and run the migrations with:
 
 ```bash
 php artisan vendor:publish --tag="laravel-imgproxy-migrations"
-php artisan migrate
 ```
 
 You can publish the config file with:
@@ -40,20 +31,33 @@ This is the contents of the published config file:
 
 ```php
 return [
+    'endpoint' => env('IMGPROXY_ENDPOINT', 'http://localhost:8080'),
+    'key' => env('IMGPROXY_KEY'),
+    'salt' => env('IMGPROXY_SALT'),
+    'default_preset' => env('IMGPROXY_DEFAULT_PRESET', 'default'),
 ];
 ```
 
-Optionally, you can publish the views using
+## Configuration
 
-```bash
-php artisan vendor:publish --tag="laravel-imgproxy-views"
+You can configure the package by updating the values in your `.env` file:
+
+```dotenv
+IMGPROXY_ENDPOINT=http://localhost:8080
+IMGPROXY_KEY=your_key_here
+IMGPROXY_SALT=your_salt_here
 ```
 
 ## Usage
 
 ```php
-$imgProxy = new Imsus\ImgProxy();
-echo $imgProxy->echoPhrase('Hello, Imsus!');
+use Imsus\ImgProxy\Facades\ImgProxy;
+
+// Generate URL
+$url = ImgProxy::url('https://example.com/image.jpg', 300, 200);
+
+// Atau pake helper function
+$url = imgproxy('https://example.com/image.jpg', 300, 200);
 ```
 
 ## Testing
