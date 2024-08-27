@@ -5,8 +5,11 @@ namespace Imsus\ImgProxy;
 class ImgProxy
 {
     protected string $endpoint;
+
     protected string $key;
+
     protected string $salt;
+
     protected string $defaultPreset;
 
     public function __construct()
@@ -17,7 +20,7 @@ class ImgProxy
         $this->defaultPreset = config('imgproxy.default_preset');
     }
 
-    public function url(string $url, int $width = 0, int $height = 0, string $preset = null): string
+    public function url(string $url, int $width = 0, int $height = 0, ?string $preset = null): string
     {
         $preset = $preset ?? $this->defaultPreset;
         $encodedUrl = rtrim(strtr(base64_encode($url), '+/', '-_'), '=');
@@ -25,16 +28,18 @@ class ImgProxy
         $path = "/{$preset}/{$width}/{$height}/{$encodedUrl}";
 
         if (empty($this->key) || empty($this->salt)) {
-            return $this->endpoint . $path;
+            return $this->endpoint.$path;
         }
 
         $signature = $this->sign($path);
-        return $this->endpoint . '/' . $signature . $path;
+
+        return $this->endpoint.'/'.$signature.$path;
     }
 
     protected function sign(string $path): string
     {
-        $hmac = hash_hmac('sha256', $this->salt . $path, $this->key, true);
+        $hmac = hash_hmac('sha256', $this->salt.$path, $this->key, true);
+
         return rtrim(strtr(base64_encode($hmac), '+/', '-_'), '=');
     }
 }

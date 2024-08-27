@@ -2,7 +2,6 @@
 
 namespace Imsus\ImgProxy;
 
-use Imsus\ImgProxy\Commands\ImgProxyCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -20,7 +19,7 @@ class ImgProxyServiceProvider extends PackageServiceProvider
         parent::register();
 
         $this->app->singleton(ImgProxy::class, function ($app) {
-            return new ImgProxy();
+            return new ImgProxy;
         });
 
         $this->loadHelpers();
@@ -28,6 +27,6 @@ class ImgProxyServiceProvider extends PackageServiceProvider
 
     protected function loadHelpers()
     {
-        require_once __DIR__ . '/helpers.php';
+        require_once __DIR__.'/helpers.php';
     }
 }
