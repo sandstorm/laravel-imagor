@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Imsus\ImgProxy\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class ImgProxyCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-imgproxy';
 
     public $description = 'My command';
 
