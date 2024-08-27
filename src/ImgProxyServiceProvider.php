@@ -2,9 +2,9 @@
 
 namespace Imsus\ImgProxy;
 
+use Imsus\ImgProxy\Commands\ImgProxyCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Imsus\ImgProxy\Commands\ImgProxyCommand;
 
 class ImgProxyServiceProvider extends PackageServiceProvider
 {
