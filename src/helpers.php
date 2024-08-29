@@ -1,8 +1,10 @@
 <?php
 
+use Imsus\ImgProxy\ImgProxy;
+
 if (! function_exists('imgproxy')) {
-    function imgproxy($url, $width = 0, $height = 0, $preset = null)
+    function imgproxy(string $url): ImgProxy
     {
-        return app(Imsus\ImgProxy\ImgProxy::class)->url($url, $width, $height, $preset);
+        return app(ImgProxy::class)->url($url);
     }
 }

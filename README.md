@@ -15,12 +15,6 @@ You can install the package via composer:
 composer require imsus/laravel-imgproxy
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="laravel-imgproxy-migrations"
-```
-
 You can publish the config file with:
 
 ```bash
@@ -34,7 +28,6 @@ return [
     'endpoint' => env('IMGPROXY_ENDPOINT', 'http://localhost:8080'),
     'key' => env('IMGPROXY_KEY'),
     'salt' => env('IMGPROXY_SALT'),
-    'default_preset' => env('IMGPROXY_DEFAULT_PRESET', 'default'),
 ];
 ```
 
@@ -48,16 +41,30 @@ IMGPROXY_KEY=your_key_here
 IMGPROXY_SALT=your_salt_here
 ```
 
+> [!NOTE]
+> The `key' and `salt` are required only if you want to generate signed URLs. If you don't want to generate signed URLs, you can leave them empty.
+
+> [!CAUTION]
+> The `key` and `salt` should be in hex-encoded format.
+
 ## Usage
+
+### URL Generation
 
 ```php
 use Imsus\ImgProxy\Facades\ImgProxy;
 
-// Generate URL
-$url = ImgProxy::url('https://example.com/image.jpg', 300, 200);
+// Generate URL using Facade
+$url = ImgProxy::url('https://placehold.co/600x400/jpeg')
+    ->setWidth(300)
+    ->setHeight(200)
+    ->build();
 
-// Atau pake helper function
-$url = imgproxy('https://example.com/image.jpg', 300, 200);
+// Generate URL using helper function
+$url = imgproxy('https://placehold.co/600x400/jpeg')
+    ->setWidth(300)
+    ->setHeight(200)
+    ->build();
 ```
 
 ## Testing

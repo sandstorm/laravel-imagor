@@ -26,16 +26,8 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
-
         config()->set('imgproxy.endpoint', 'http://localhost:8080');
-        config()->set('imgproxy.key', '');
-        config()->set('imgproxy.salt', '');
-        config()->set('imgproxy.default_preset', 'default');
-
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_laravel-imgproxy_table.php.stub';
-        $migration->up();
-        */
+        config()->set('imgproxy.key', '9f8872c847aa7692d1ced3cdc65b717029342f01921d7c3cd16a7a7c08bcd2ed');
+        config()->set('imgproxy.salt', '1808025a453998c05892b99e08518c5529e8cbd9dc7c2e6d23ca33dfc7db0b30');
     }
 }

@@ -76,7 +76,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Imsus\\ImgProxy\\ImgProxyServiceProvider"
+                "Imsus\\ImgProxy\\ImgProxyServiceProvider",
+                "Workbench\\App\\Providers\\WorkbenchServiceProvider"
             ],
             "aliases": {
                 "ImgProxy": "Imsus\\ImgProxy\\Facades\\ImgProxy"
