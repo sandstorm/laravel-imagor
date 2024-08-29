@@ -76,6 +76,7 @@ class ImgProxy
      * Set the resize mode for the image.
      *
      * @param  ResizeType  $mode  The resize mode ('fit', 'fill', 'crop', 'force')
+     *
      * @see \Imsus\ImgProxy\Enums\ResizeType
      */
     public function setResizeType(ResizeType $mode): self
