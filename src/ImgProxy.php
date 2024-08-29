@@ -38,7 +38,7 @@ class ImgProxy
     /**
      * Set the source URL for the image.
      *
-     * @param string $source_url The URL of the source image
+     * @param  string  $source_url  The URL of the source image
      */
     public function url(string $source_url): self
     {
@@ -50,7 +50,7 @@ class ImgProxy
     /**
      * Set the height of the output image.
      *
-     * @param int $height The desired height in pixels
+     * @param  int  $height  The desired height in pixels
      */
     public function setHeight(int $height): self
     {
@@ -62,7 +62,7 @@ class ImgProxy
     /**
      * Set the width of the output image.
      *
-     * @param int $width The desired width in pixels
+     * @param  int  $width  The desired width in pixels
      */
     public function setWidth(int $width): self
     {
@@ -74,7 +74,8 @@ class ImgProxy
     /**
      * Set the resize mode for the image.
      *
-     * @param string $mode The resize mode ('fit', 'fill', 'crop', 'force')
+     * @param  string  $mode  The resize mode ('fit', 'fill', 'crop', 'force')
+     *
      * @see \Imsus\ImgProxy\Enums\ResizeType
      */
     public function setResizeType(ResizeType $mode): self
@@ -87,9 +88,9 @@ class ImgProxy
     /**
      * Set the source URL mode (encoded or plain).
      *
-     * @param SourceUrlMode $source_url_mode The source URL mode
+     * @param  SourceUrlMode  $source_url_mode  The source URL mode
+     *
      * @see \Imsus\ImgProxy\Enums\SourceUrlMode
-     * @return self
      */
     public function setMode(SourceUrlMode $source_url_mode): self
     {
@@ -101,9 +102,9 @@ class ImgProxy
     /**
      * Set the output file extension.
      *
-     * @param OutputExtension $extension The desired file extension
+     * @param  OutputExtension  $extension  The desired file extension
+     *
      * @see \Imsus\ImgProxy\Enums\OutputExtension
-     * @return self
      */
     public function setExtension(OutputExtension $extension): self
     {
@@ -115,9 +116,9 @@ class ImgProxy
     /**
      * Set the processing string.
      *
-     * @param string $processing_options The processing string to be used
+     * @param  string  $processing_options  The processing string to be used
+     *
      * @see https://docs.imgproxy.net/usage/processing#processing-options
-     * @return self
      */
     public function setProcessing(string $processing_options): self
     {
@@ -130,6 +131,7 @@ class ImgProxy
      * Build the final ImgProxy URL.
      *
      * @return string The generated ImgProxy URL
+     *
      * @throws \InvalidArgumentException If the source URL is invalid
      */
     public function build(): string
@@ -177,7 +179,7 @@ class ImgProxy
     private function buildProcessingOptions(): string
     {
         return implode('/', array_map(
-            fn($key, $value) => "{$key}:{$value}",
+            fn ($key, $value) => "{$key}:{$value}",
             array_keys($this->options),
             $this->options
         ));
@@ -186,7 +188,7 @@ class ImgProxy
     /**
      * Generates a signature for the given path.
      *
-     * @param string $path The path to generate a signature for
+     * @param  string  $path  The path to generate a signature for
      * @return string The generated signature
      */
     public function generateSignature(string $path): string
@@ -205,10 +207,10 @@ class ImgProxy
             return $value;
         }
 
-        if (!ctype_xdigit($value)) {
+        if (! ctype_xdigit($value)) {
             throw new \InvalidArgumentException("The {$name} must be a hex-encoded string.");
         }
 
-        return pack("H*", $value);
+        return pack('H*', $value);
     }
 }

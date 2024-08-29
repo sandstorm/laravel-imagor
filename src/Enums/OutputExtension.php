@@ -25,4 +25,3 @@ enum OutputExtension: string
         return self::tryFrom(strtolower($extension));
     }
 }
-
