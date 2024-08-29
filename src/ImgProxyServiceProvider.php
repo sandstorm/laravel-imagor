@@ -25,7 +25,7 @@ class ImgProxyServiceProvider extends PackageServiceProvider
         $this->loadHelpers();
     }
 
-    protected function loadHelpers()
+    protected function loadHelpers(): void
     {
         require_once __DIR__.'/helpers.php';
     }
