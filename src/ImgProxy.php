@@ -87,6 +87,22 @@ class ImgProxy
     }
 
     /**
+     * Set the device pixel ratio (DPR) for the image.
+     *
+     * @param  int  $dpr  The device pixel ratio (1-8)
+     */
+    public function setDpr(int $dpr): self
+    {
+        if ($dpr < 1 || $dpr > 8) {
+            throw new \InvalidArgumentException('DPR (Device Pixel Ratio) must be between 1 and 8');
+        }
+
+        $this->options['dpr'] = $dpr;
+
+        return $this;
+    }
+
+    /**
      * Set the source URL mode (encoded or plain).
      *
      * @param  SourceUrlMode  $source_url_mode  The source URL mode
