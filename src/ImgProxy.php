@@ -153,7 +153,12 @@ class ImgProxy
      */
     public function build(): string
     {
-        $this->validateSourceUrl();
+        try {
+            $this->validateSourceUrl();
+        } catch (\InvalidArgumentException $e) {
+            return $this->source_url;
+        }
+
         $path = $this->buildPath();
 
         if ($this->key && $this->salt) {
@@ -192,7 +197,7 @@ class ImgProxy
     private function buildProcessingOptions(): string
     {
         return implode('/', array_map(
-            fn ($key, $value) => "{$key}:{$value}",
+            fn($key, $value) => "{$key}:{$value}",
             array_keys($this->options),
             $this->options
         ));
