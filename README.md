@@ -18,7 +18,7 @@ composer require imsus/laravel-imgproxy
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag="laravel-imgproxy-config"
+php artisan vendor:publish --tag="imgproxy-config"
 ```
 
 This is the contents of the published config file:
