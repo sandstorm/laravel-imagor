@@ -131,6 +131,102 @@ class ImgProxy
     }
 
     /**
+     * Set the image quality (0-100).
+     *
+     * @param  int  $quality  The quality level (0-100)
+     */
+    public function setQuality(int $quality): self
+    {
+        if ($quality < 0 || $quality > 100) {
+            throw new \InvalidArgumentException('Quality must be between 0 and 100');
+        }
+
+        $this->options['quality'] = $quality;
+
+        return $this;
+    }
+
+    /**
+     * Set the blur effect strength.
+     *
+     * @param  float  $sigma  Blur sigma (0.0 and above)
+     */
+    public function setBlur(float $sigma): self
+    {
+        if ($sigma < 0) {
+            throw new \InvalidArgumentException('Blur sigma must be 0.0 or greater');
+        }
+
+        $this->options['blur'] = $sigma;
+
+        return $this;
+    }
+
+    /**
+     * Set the sharpen effect strength.
+     *
+     * @param  float  $sigma  Sharpen sigma (0.0 and above)
+     */
+    public function setSharpen(float $sigma): self
+    {
+        if ($sigma < 0) {
+            throw new \InvalidArgumentException('Sharpen sigma must be 0.0 or greater');
+        }
+
+        $this->options['sharpen'] = $sigma;
+
+        return $this;
+    }
+
+    /**
+     * Set the brightness adjustment (-255 to 255).
+     *
+     * @param  int  $brightness  Brightness adjustment (-255 to 255)
+     */
+    public function setBrightness(int $brightness): self
+    {
+        if ($brightness < -255 || $brightness > 255) {
+            throw new \InvalidArgumentException('Brightness must be between -255 and 255');
+        }
+
+        $this->options['brightness'] = $brightness;
+
+        return $this;
+    }
+
+    /**
+     * Set the contrast adjustment (0.0 and above).
+     *
+     * @param  float  $contrast  Contrast multiplier (0.0 and above)
+     */
+    public function setContrast(float $contrast): self
+    {
+        if ($contrast < 0) {
+            throw new \InvalidArgumentException('Contrast must be 0.0 or greater');
+        }
+
+        $this->options['contrast'] = $contrast;
+
+        return $this;
+    }
+
+    /**
+     * Set the saturation adjustment (0.0 and above).
+     *
+     * @param  float  $saturation  Saturation multiplier (0.0 and above)
+     */
+    public function setSaturation(float $saturation): self
+    {
+        if ($saturation < 0) {
+            throw new \InvalidArgumentException('Saturation must be 0.0 or greater');
+        }
+
+        $this->options['saturation'] = $saturation;
+
+        return $this;
+    }
+
+    /**
      * Set the processing string.
      *
      * @param  string  $processing_options  The processing string to be used
@@ -197,7 +293,7 @@ class ImgProxy
     private function buildProcessingOptions(): string
     {
         return implode('/', array_map(
-            fn ($key, $value) => "{$key}:{$value}",
+            fn($key, $value) => "{$key}:{$value}",
             array_keys($this->options),
             $this->options
         ));
