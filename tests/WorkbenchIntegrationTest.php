@@ -2,9 +2,9 @@
 
 namespace Imsus\ImgProxy\Tests;
 
-use Imsus\ImgProxy\Facades\ImgProxy;
 use Imsus\ImgProxy\Enums\OutputExtension;
 use Imsus\ImgProxy\Enums\ResizeType;
+use Imsus\ImgProxy\Facades\ImgProxy;
 
 beforeEach(function () {
     $this->sampleImageUrl = 'https://picsum.photos/800/600';
@@ -12,17 +12,17 @@ beforeEach(function () {
 
 it('can make HTTP request to workbench basic test endpoint', function () {
     $response = $this->get('/imgproxy-test/basic');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'original',
             'processed',
-            'test'
+            'test',
         ])
         ->assertJson([
-            'test' => 'basic_url_generation'
+            'test' => 'basic_url_generation',
         ]);
-    
+
     $data = $response->json();
     expect($data['processed'])->toContain('width:400')
         ->and($data['processed'])->toContain('height:300');
@@ -30,18 +30,18 @@ it('can make HTTP request to workbench basic test endpoint', function () {
 
 it('can make HTTP request to workbench effects test endpoint', function () {
     $response = $this->get('/imgproxy-test/effects');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'original',
             'processed',
             'effects_applied',
-            'test'
+            'test',
         ])
         ->assertJson([
-            'test' => 'effects_and_quality'
+            'test' => 'effects_and_quality',
         ]);
-    
+
     $data = $response->json();
     expect($data['processed'])->toContain('quality:85')
         ->and($data['processed'])->toContain('blur:1')
@@ -50,22 +50,22 @@ it('can make HTTP request to workbench effects test endpoint', function () {
 
 it('can make HTTP request to workbench formats test endpoint', function () {
     $response = $this->get('/imgproxy-test/formats');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'original',
             'formats' => [
                 'jpeg',
-                'png', 
+                'png',
                 'webp',
-                'avif'
+                'avif',
             ],
-            'test'
+            'test',
         ])
         ->assertJson([
-            'test' => 'format_conversion'
+            'test' => 'format_conversion',
         ]);
-    
+
     $data = $response->json();
     expect($data['formats']['jpeg'])->toContain('.jpg')
         ->and($data['formats']['png'])->toContain('.png')
@@ -75,7 +75,7 @@ it('can make HTTP request to workbench formats test endpoint', function () {
 
 it('can make HTTP request to workbench resize test endpoint', function () {
     $response = $this->get('/imgproxy-test/resize');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'original',
@@ -83,11 +83,11 @@ it('can make HTTP request to workbench resize test endpoint', function () {
                 'fit',
                 'fill',
                 'force',
-                'auto'
+                'auto',
             ],
-            'test'
+            'test',
         ]);
-    
+
     $data = $response->json();
     expect($data['resize_types']['fit'])->toContain('resizing_type:fit')
         ->and($data['resize_types']['fill'])->toContain('resizing_type:fill')
@@ -97,24 +97,24 @@ it('can make HTTP request to workbench resize test endpoint', function () {
 
 it('can make HTTP request to facade vs helper comparison endpoint', function () {
     $response = $this->get('/imgproxy-test/facade-vs-helper');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'original',
             'facade_result',
             'helper_result',
             'urls_match',
-            'test'
+            'test',
         ])
         ->assertJson([
             'urls_match' => true,
-            'test' => 'facade_vs_helper'
+            'test' => 'facade_vs_helper',
         ]);
 });
 
 it('can make HTTP request to configuration test endpoint', function () {
     $response = $this->get('/imgproxy-test/config');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'endpoint',
@@ -122,12 +122,12 @@ it('can make HTTP request to configuration test endpoint', function () {
             'has_salt',
             'default_source_url_mode',
             'default_output_extension',
-            'test'
+            'test',
         ])
         ->assertJson([
-            'test' => 'configuration'
+            'test' => 'configuration',
         ]);
-    
+
     $data = $response->json();
     expect($data['endpoint'])->toBe('http://localhost:8080')
         ->and($data['default_source_url_mode'])->toBe('encoded')
@@ -136,17 +136,17 @@ it('can make HTTP request to configuration test endpoint', function () {
 
 it('can make HTTP request to error handling test endpoint', function () {
     $response = $this->get('/imgproxy-test/error-handling');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'invalid_url_handling',
             'invalid_quality_error',
-            'test'
+            'test',
         ])
         ->assertJson([
-            'test' => 'error_handling'
+            'test' => 'error_handling',
         ]);
-    
+
     $data = $response->json();
     expect($data['invalid_url_handling'])->toBe('not-a-valid-url') // Should return original invalid URL
         ->and($data['invalid_quality_error'])->toContain('Quality must be between 0 and 100');
@@ -154,20 +154,20 @@ it('can make HTTP request to error handling test endpoint', function () {
 
 it('can make HTTP request to performance test endpoint', function () {
     $response = $this->get('/imgproxy-test/performance');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'urls_generated',
             'duration_seconds',
             'urls_per_second',
             'sample_urls',
-            'test'
+            'test',
         ])
         ->assertJson([
             'urls_generated' => 100,
-            'test' => 'performance'
+            'test' => 'performance',
         ]);
-    
+
     $data = $response->json();
     expect($data['urls_per_second'])->toBeGreaterThan(100) // Should generate URLs quickly
         ->and($data['sample_urls'])->toHaveCount(3);
@@ -175,14 +175,14 @@ it('can make HTTP request to performance test endpoint', function () {
 
 it('can access workbench test index endpoint', function () {
     $response = $this->get('/imgproxy-test/');
-    
+
     $response->assertStatus(200)
         ->assertJsonStructure([
             'message',
             'available_tests',
-            'usage'
+            'usage',
         ]);
-    
+
     $data = $response->json();
     expect($data['available_tests'])->toHaveCount(8)
         ->and($data['message'])->toContain('ImgProxy Laravel Package Test Suite');
@@ -197,7 +197,7 @@ it('has ImgProxy facade available in workbench', function () {
     $url = ImgProxy::url($this->sampleImageUrl)
         ->setWidth(200)
         ->build();
-    
+
     expect($url)->toBeString()
         ->and($url)->toContain('width:200');
 });
@@ -209,7 +209,7 @@ it('can use all enum classes in workbench', function () {
         ->setResizeType(ResizeType::FILL)
         ->setExtension(OutputExtension::WEBP)
         ->build();
-    
+
     expect($url)->toContain('resizing_type:fill')
         ->and($url)->toContain('.webp');
 });

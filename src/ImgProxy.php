@@ -293,7 +293,7 @@ class ImgProxy
     private function buildProcessingOptions(): string
     {
         return implode('/', array_map(
-            fn($key, $value) => "{$key}:{$value}",
+            fn ($key, $value) => "{$key}:{$value}",
             array_keys($this->options),
             $this->options
         ));
