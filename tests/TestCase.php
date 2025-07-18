@@ -21,6 +21,7 @@ class TestCase extends Orchestra
     {
         return [
             ImgProxyServiceProvider::class,
+            \Workbench\App\Providers\WorkbenchServiceProvider::class,
         ];
     }
 

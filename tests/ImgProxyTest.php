@@ -64,3 +64,144 @@ it('can use fluent methods', function () {
 
     expect($url)->toBe('http://localhost:8080/Bi1ABm01lyP2ReV49nRXSqwIP8dRzH_MYW_sb2GttMU/width:100/height:100/aHR0cHM6Ly9wbGFjZWhvbGQuY28vNjAweDQwMC9qcGVn.jpg');
 });
+
+// Edge case tests
+it('returns original url for invalid urls', function () {
+    $invalidUrl = 'not-a-valid-url';
+    $imgProxy = new ImgProxy;
+    $url = $imgProxy
+        ->url($invalidUrl)
+        ->setWidth(100)
+        ->build();
+
+    expect($url)->toBe($invalidUrl);
+});
+
+it('returns original url for empty urls', function () {
+    $emptyUrl = '';
+    $imgProxy = new ImgProxy;
+    $url = $imgProxy
+        ->url($emptyUrl)
+        ->setWidth(100)
+        ->build();
+
+    expect($url)->toBe($emptyUrl);
+});
+
+it('throws exception for invalid hex key', function () {
+    expect(function () {
+        config()->set('imgproxy.key', 'invalid-hex');
+        new ImgProxy;
+    })->toThrow(\InvalidArgumentException::class, 'The key must be a hex-encoded string.');
+});
+
+it('throws exception for invalid hex salt', function () {
+    expect(function () {
+        config()->set('imgproxy.salt', 'invalid-hex');
+        new ImgProxy;
+    })->toThrow(\InvalidArgumentException::class, 'The salt must be a hex-encoded string.');
+});
+
+it('validates dpr bounds', function () {
+    $imgProxy = new ImgProxy;
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setDpr(0);
+    })->toThrow(\InvalidArgumentException::class, 'DPR (Device Pixel Ratio) must be between 1 and 8');
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setDpr(9);
+    })->toThrow(\InvalidArgumentException::class, 'DPR (Device Pixel Ratio) must be between 1 and 8');
+});
+
+it('accepts valid dpr values', function () {
+    $imgProxy = new ImgProxy;
+
+    // Should not throw exceptions
+    $imgProxy->setDpr(1);
+    $imgProxy->setDpr(4);
+    $imgProxy->setDpr(8);
+
+    expect(true)->toBe(true);
+});
+
+// Quality and effects tests
+it('validates quality bounds', function () {
+    $imgProxy = new ImgProxy;
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setQuality(-1);
+    })->toThrow(\InvalidArgumentException::class, 'Quality must be between 0 and 100');
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setQuality(101);
+    })->toThrow(\InvalidArgumentException::class, 'Quality must be between 0 and 100');
+});
+
+it('accepts valid quality values', function () {
+    $imgProxy = new ImgProxy;
+
+    $imgProxy->setQuality(0);
+    $imgProxy->setQuality(50);
+    $imgProxy->setQuality(100);
+
+    expect(true)->toBe(true);
+});
+
+it('validates blur sigma values', function () {
+    $imgProxy = new ImgProxy;
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setBlur(-1.0);
+    })->toThrow(\InvalidArgumentException::class, 'Blur sigma must be 0.0 or greater');
+});
+
+it('validates sharpen sigma values', function () {
+    $imgProxy = new ImgProxy;
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setSharpen(-1.0);
+    })->toThrow(\InvalidArgumentException::class, 'Sharpen sigma must be 0.0 or greater');
+});
+
+it('validates brightness bounds', function () {
+    $imgProxy = new ImgProxy;
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setBrightness(-256);
+    })->toThrow(\InvalidArgumentException::class, 'Brightness must be between -255 and 255');
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setBrightness(256);
+    })->toThrow(\InvalidArgumentException::class, 'Brightness must be between -255 and 255');
+});
+
+it('validates contrast values', function () {
+    $imgProxy = new ImgProxy;
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setContrast(-1.0);
+    })->toThrow(\InvalidArgumentException::class, 'Contrast must be 0.0 or greater');
+});
+
+it('validates saturation values', function () {
+    $imgProxy = new ImgProxy;
+
+    expect(function () use ($imgProxy) {
+        $imgProxy->setSaturation(-1.0);
+    })->toThrow(\InvalidArgumentException::class, 'Saturation must be 0.0 or greater');
+});
+
+it('can use quality and effects in url building', function () {
+    $url = imgproxy($this->sample_image_url)
+        ->setWidth(300)
+        ->setHeight(200)
+        ->setQuality(85)
+        ->setBlur(1.5)
+        ->build();
+
+    expect($url)->toContain('width:300');
+    expect($url)->toContain('height:200');
+    expect($url)->toContain('quality:85');
+    expect($url)->toContain('blur:1.5');
+});
