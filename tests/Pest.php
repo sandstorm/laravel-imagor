@@ -1,5 +1,5 @@
 <?php
 
-use Imsus\ImgProxy\Tests\TestCase;
+use Sandstorm\LaravelImagor\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

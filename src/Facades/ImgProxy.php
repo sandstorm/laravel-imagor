@@ -1,16 +1,16 @@
 <?php
 
-namespace Imsus\ImgProxy\Facades;
+namespace Sandstorm\LaravelImagor\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Imsus\ImgProxy\ImgProxy
+ * @see \Sandstorm\LaravelImagor\ImgProxy
  */
 class ImgProxy extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Imsus\ImgProxy\ImgProxy::class;
+        return \Sandstorm\LaravelImagor\ImgProxy::class;
     }
 }

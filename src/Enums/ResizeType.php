@@ -1,6 +1,6 @@
 <?php
 
-namespace Imsus\ImgProxy\Enums;
+namespace Sandstorm\LaravelImagor\Enums;
 
 enum ResizeType: string
 {

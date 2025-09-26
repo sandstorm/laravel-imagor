@@ -1,10 +1,10 @@
 <?php
 
-namespace Imsus\ImgProxy\Tests;
+namespace Sandstorm\LaravelImagor\Tests;
 
-use Imsus\ImgProxy\Enums\OutputExtension;
-use Imsus\ImgProxy\Enums\ResizeType;
-use Imsus\ImgProxy\Facades\ImgProxy;
+use Sandstorm\LaravelImagor\Enums\OutputExtension;
+use Sandstorm\LaravelImagor\Enums\ResizeType;
+use Sandstorm\LaravelImagor\Facades\ImgProxy;
 
 beforeEach(function () {
     $this->sampleImageUrl = 'https://picsum.photos/800/600';

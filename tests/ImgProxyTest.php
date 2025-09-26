@@ -1,10 +1,10 @@
 <?php
 
-namespace Imsus\ImgProxy\Tests;
+namespace Sandstorm\LaravelImagor\Tests;
 
-use Imsus\ImgProxy\Enums\OutputExtension;
-use Imsus\ImgProxy\Enums\SourceUrlMode;
-use Imsus\ImgProxy\ImgProxy;
+use Sandstorm\LaravelImagor\Enums\OutputExtension;
+use Sandstorm\LaravelImagor\Enums\SourceUrlMode;
+use Sandstorm\LaravelImagor\ImgProxy;
 
 beforeEach(function () {
     $this->sample_image_url = 'https://placehold.co/600x400/jpeg';

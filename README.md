@@ -77,9 +77,9 @@ IMGPROXY_DEFAULT_OUTPUT_EXTENSION=jpeg
 ### Basic Usage
 
 ```php
-use Imsus\ImgProxy\Facades\ImgProxy;
-use Imsus\ImgProxy\Enums\OutputExtension;
-use Imsus\ImgProxy\Enums\ResizeType;
+use Sandstorm\LaravelImagor\Facades\ImgProxy;
+use Sandstorm\LaravelImagor\Enums\OutputExtension;
+use Sandstorm\LaravelImagor\Enums\ResizeType;
 
 // Generate URL using Facade
 $url = ImgProxy::url('https://example.com/image.jpg')
@@ -140,7 +140,7 @@ $url = imgproxy('https://example.com/photo.jpg')
 ### Advanced Processing
 
 ```php
-use Imsus\ImgProxy\Enums\SourceUrlMode;
+use Sandstorm\LaravelImagor\Enums\SourceUrlMode;
 
 // Plain URL mode for debugging
 $url = imgproxy('https://example.com/image.jpg')
@@ -370,7 +370,7 @@ Blade::directive('imgproxy', function ($expression) {
 });
 
 Blade::directive('avatar', function ($expression) {
-    return "<?php echo imgproxy($expression)->setWidth(150)->setHeight(150)->setResizeType(\Imsus\ImgProxy\Enums\ResizeType::FILL)->build(); ?>";
+    return "<?php echo imgproxy($expression)->setWidth(150)->setHeight(150)->setResizeType(\Sandstorm\LaravelImagor\Enums\ResizeType::FILL)->build(); ?>";
 });
 ```
 

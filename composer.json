@@ -34,8 +34,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Imsus\\ImgProxy\\": "src/",
-            "Imsus\\ImgProxy\\Database\\Factories\\": "database/factories/"
+            "Sandstorm\\LaravelImagor\\": "src/",
+            "Sandstorm\\LaravelImagor\\Database\\Factories\\": "database/factories/"
         },
         "files": [
             "src/helpers.php"
@@ -43,7 +43,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Imsus\\ImgProxy\\Tests\\": "tests/",
+            "Sandstorm\\LaravelImagor\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -75,10 +75,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Imsus\\ImgProxy\\ImgProxyServiceProvider"
+                "Sandstorm\\LaravelImagor\\ImgProxyServiceProvider"
             ],
             "aliases": {
-                "ImgProxy": "Imsus\\ImgProxy\\Facades\\ImgProxy"
+                "ImgProxy": "Sandstorm\\LaravelImagor\\Facades\\ImgProxy"
             }
         }
     },

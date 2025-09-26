@@ -1,10 +1,10 @@
 <?php
 
-namespace Imsus\ImgProxy;
+namespace Sandstorm\LaravelImagor;
 
-use Imsus\ImgProxy\Enums\OutputExtension;
-use Imsus\ImgProxy\Enums\ResizeType;
-use Imsus\ImgProxy\Enums\SourceUrlMode;
+use Sandstorm\LaravelImagor\Enums\OutputExtension;
+use Sandstorm\LaravelImagor\Enums\ResizeType;
+use Sandstorm\LaravelImagor\Enums\SourceUrlMode;
 
 class ImgProxy
 {
@@ -77,7 +77,7 @@ class ImgProxy
      *
      * @param  ResizeType  $mode  The resize mode ('fit', 'fill', 'crop', 'force')
      *
-     * @see \Imsus\ImgProxy\Enums\ResizeType
+     * @see \Sandstorm\LaravelImagor\Enums\ResizeType
      */
     public function setResizeType(ResizeType $mode): self
     {
@@ -107,7 +107,7 @@ class ImgProxy
      *
      * @param  SourceUrlMode  $source_url_mode  The source URL mode
      *
-     * @see \Imsus\ImgProxy\Enums\SourceUrlMode
+     * @see \Sandstorm\LaravelImagor\Enums\SourceUrlMode
      */
     public function setMode(SourceUrlMode $source_url_mode): self
     {
@@ -121,7 +121,7 @@ class ImgProxy
      *
      * @param  OutputExtension  $extension  The desired file extension
      *
-     * @see \Imsus\ImgProxy\Enums\OutputExtension
+     * @see \Sandstorm\LaravelImagor\Enums\OutputExtension
      */
     public function setExtension(OutputExtension $extension): self
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Imsus\ImgProxy;
+namespace Sandstorm\LaravelImagor;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;

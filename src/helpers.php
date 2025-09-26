@@ -1,6 +1,6 @@
 <?php
 
-use Imsus\ImgProxy\ImgProxy;
+use Sandstorm\LaravelImagor\ImgProxy;
 
 if (! function_exists('imgproxy')) {
     function imgproxy(string $url): ImgProxy

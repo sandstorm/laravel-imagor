@@ -4,9 +4,9 @@ namespace Workbench\App\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Imsus\ImgProxy\Enums\OutputExtension;
-use Imsus\ImgProxy\Enums\ResizeType;
-use Imsus\ImgProxy\Facades\ImgProxy;
+use Sandstorm\LaravelImagor\Enums\OutputExtension;
+use Sandstorm\LaravelImagor\Enums\ResizeType;
+use Sandstorm\LaravelImagor\Facades\ImgProxy;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
