@@ -1,46 +1,45 @@
-# Laravel integration for ImgProxy
+# Laravel integration for Imagor
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/imsus/laravel-imgproxy.svg?style=flat-square)](https://packagist.org/packages/imsus/laravel-imgproxy)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/imsus/laravel-imgproxy/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/imsus/laravel-imgproxy/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/imsus/laravel-imgproxy/run-tests.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/imsus/laravel-imgproxy/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/imsus/laravel-imgproxy.svg?style=flat-square)](https://packagist.org/packages/imsus/laravel-imgproxy)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/sandstorm/laravel-imagor.svg?style=flat-square)](https://packagist.org/packages/sandstorm/laravel-imagor)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/sandstorm/laravel-imagor/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/sandstorm/laravel-imagor/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/sandstorm/laravel-imagor/run-tests.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/sandstorm/laravel-imagor/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/sandstorm/laravel-imagor.svg?style=flat-square)](https://packagist.org/packages/sandstorm/laravel-imagor)
 
-A comprehensive Laravel package for [ImgProxy](https://imgproxy.net/) integration. Generate optimized, signed image URLs with fluent API including resizing, quality control, visual effects, and advanced processing options.
+A comprehensive Laravel package for [Imagor](https://github.com/cshum/imagor) integration. Generate optimized, signed image URLs with fluent API including resizing, quality control, visual effects, and advanced processing options. Originally forked from https://github.com/imsus/laravel-imgproxy, which deserves most credit :) 
 
 ## Features
 
--   🚀 **Fluent API** - Clean, chainable method syntax
--   🔒 **Secure URLs** - HMAC-SHA256 signed URLs with hex key/salt validation
--   🎨 **Visual Effects** - Blur, sharpen, brightness, contrast, saturation adjustments
--   ⚡ **Quality Control** - Fine-tune compression for JPEG, WebP, AVIF formats
--   📐 **Flexible Resizing** - Multiple resize modes with DPR support
--   🔧 **Laravel Integration** - Service provider, facade, and helper function
--   ✅ **Type Safe** - PHP 8.2+ enums and comprehensive validation
--   🧪 **Well Tested** - 39+ tests with workbench integration & visual testing
+- 🚀 **Fluent API** - Clean, chainable method syntax
+- 🔒 **Secure URLs** - HMAC signed URLs with configurable keys
+- 🎨 **Visual Effects** - Blur, sharpen, brightness, contrast, saturation adjustments
+- ⚡ **Quality Control** - Fine-tune compression and output formats
+- 🔧 **Flexible Resizing** - Multiple resize modes with smart cropping
+- 🧩 **Laravel Integration** - Service provider, facade, and helper function
+- ✅ **Type Safe** - PHP 8.2+ with comprehensive validation
+- 🧪 **Well Tested** - Comprehensive test suite with workbench integration
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require imsus/laravel-imgproxy
+composer require sandstorm/laravel-imagor
 ```
 
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag="imgproxy-config"
+php artisan vendor:publish --tag="imagor-config"
 ```
 
 This is the contents of the published config file:
 
 ```php
 return [
-    'endpoint' => env('IMGPROXY_ENDPOINT', 'http://localhost:8080'),
-    'key' => env('IMGPROXY_KEY'),
-    'salt' => env('IMGPROXY_SALT'),
-    'default_source_url_mode' => env('IMGPROXY_DEFAULT_SOURCE_URL_MODE', 'encoded'),
-    'default_output_extension' => env('IMGPROXY_DEFAULT_OUTPUT_EXTENSION', 'jpeg'),
+    'base_url' => env('IMAGOR_BASE_URL', 'http://localhost:8000'),
+    'signer_type' => env('IMAGOR_SIGNER_TYPE', 'sha256'),
+    'secret' => env('IMAGOR_SECRET'),
+    'signer_truncate' => env('IMAGOR_SIGNER_TRUNCATE'),
 ];
 ```
 
@@ -49,310 +48,200 @@ return [
 You can configure the package by updating the values in your `.env` file:
 
 ```dotenv
-IMGPROXY_ENDPOINT=http://localhost:8080
-IMGPROXY_KEY=your_hex_key_here
-IMGPROXY_SALT=your_hex_salt_here
-IMGPROXY_DEFAULT_SOURCE_URL_MODE=encoded
-IMGPROXY_DEFAULT_OUTPUT_EXTENSION=jpeg
+IMAGOR_BASE_URL=http://localhost:8000
+IMAGOR_SECRET=your_secret_key_here
+IMAGOR_SIGNER_TYPE=sha256
+IMAGOR_SIGNER_TRUNCATE=null
 ```
 
 > [!NOTE]
-> The `key` and `salt` are required only if you want to generate signed URLs. If you don't want to generate signed URLs, you can leave them empty.
+> The `secret` is required only if you want to generate signed URLs. If you don't want to generate signed URLs, you can leave it empty.
 
 > [!CAUTION]
-> The `key` and `salt` should be in hex-encoded format. Generate them using: `openssl rand -hex 32`
+> Keep your secret key secure and use a strong, randomly generated value in production.
 
 ### Configuration Options
 
-| Option                     | Description               | Default                 | Options                             |
-| -------------------------- | ------------------------- | ----------------------- | ----------------------------------- |
-| `endpoint`                 | ImgProxy server URL       | `http://localhost:8080` | Any valid URL                       |
-| `key`                      | Hex-encoded signing key   | `null`                  | 64-char hex string                  |
-| `salt`                     | Hex-encoded signing salt  | `null`                  | 64-char hex string                  |
-| `default_source_url_mode`  | How to encode source URLs | `encoded`               | `encoded`, `plain`                  |
-| `default_output_extension` | Default output format     | `jpeg`                  | `jpeg`, `png`, `webp`, `avif`, etc. |
+| Option             | Description                    | Default               | Options                           |
+| ------------------ | ------------------------------ | --------------------- | --------------------------------- |
+| `base_url`         | Imagor server URL              | `http://localhost:8000` | Any valid URL                     |
+| `secret`           | Signing secret key             | `null`                | Any string                        |
+| `signer_type`      | HMAC algorithm                 | `sha256`              | `sha256`, `sha1`, `md5`           |
+| `signer_truncate`  | Truncate signature length      | `null`                | Integer or null                   |
 
 ## Usage
 
 ### Basic Usage
 
 ```php
-use Sandstorm\LaravelImagor\Facades\ImgProxy;
-use Sandstorm\LaravelImagor\Enums\OutputExtension;
-use Sandstorm\LaravelImagor\Enums\ResizeType;
-
-// Generate URL using Facade
-$url = ImgProxy::url('https://example.com/image.jpg')
-    ->setWidth(300)
-    ->setHeight(200)
-    ->build();
-
 // Generate URL using helper function
-$url = imgproxy('https://example.com/image.jpg')
-    ->setWidth(300)
-    ->setHeight(200)
-    ->build();
+$url = imagor()->resize(width: 400, height: 300)->build('https://example.com/image.jpg');
+
+// Or using the fluent API
+$url = imagor()
+    ->resize(width: 400, height: 300)
+    ->build('https://example.com/image.jpg');
 ```
 
-### Resizing & Formatting
+### Resizing & Cropping
 
 ```php
-$url = imgproxy('https://example.com/image.jpg')
-    ->setWidth(400)
-    ->setHeight(300)
-    ->setResizeType(ResizeType::FILL)
-    ->setExtension(OutputExtension::WEBP)
-    ->setDpr(2)  // High DPI displays
-    ->build();
+// Basic resizing
+$url = imagor()->resize(width: 400, height: 300)->build($imageUrl);
+
+// Fit image within dimensions (preserves aspect ratio)
+$url = imagor()->resize(width: 400, height: 300)->fitIn()->build($imageUrl);
+
+// Force stretch to exact dimensions (does NOT preserve aspect ratio)
+$url = imagor()->resize(width: 400, height: 300)->stretch()->build($imageUrl);
+
+// Smart cropping with focal point detection
+$url = imagor()->resize(width: 400, height: 300)->smart()->build($imageUrl);
+
+// Manual cropping (left, top, right, bottom)
+$url = imagor()->crop(10, 10, 300, 200)->build($imageUrl);
 ```
 
-### Quality Control
+### Quality & Format Control
 
 ```php
-// Optimize for different use cases
-$thumbnail = imgproxy($image)
-    ->setWidth(150)
-    ->setHeight(150)
-    ->setQuality(70)  // Lower quality for thumbnails
-    ->build();
+// Set JPEG quality
+$url = imagor()->resize(width: 400)->quality(85)->build($imageUrl);
 
-$hero = imgproxy($image)
-    ->setWidth(1200)
-    ->setHeight(600)
-    ->setQuality(90)  // Higher quality for hero images
-    ->build();
+// Convert to different formats
+$webpUrl = imagor()->resize(width: 400)->format('webp')->build($imageUrl);
+$avifUrl = imagor()->resize(width: 400)->format('avif')->build($imageUrl);
+$pngUrl = imagor()->resize(width: 400)->format('png')->build($imageUrl);
 ```
 
 ### Visual Effects
 
 ```php
-$url = imgproxy('https://example.com/photo.jpg')
-    ->setWidth(500)
-    ->setHeight(300)
-    ->setBlur(2.0)          // Blur effect
-    ->setSharpen(1.5)       // Sharpen details
-    ->setBrightness(20)     // Increase brightness
-    ->setContrast(1.2)      // Enhance contrast
-    ->setSaturation(1.1)    // Boost saturation
-    ->build();
+$url = imagor()
+    ->resize(width: 500, height: 300)
+    ->blur(2.0)              // Blur effect
+    ->sharpen(1.5)           // Sharpen details  
+    ->brightness(20)         // Increase brightness
+    ->contrast(110)          // Enhance contrast (percentage)
+    ->saturation(120)        // Boost saturation (percentage)
+    ->build($imageUrl);
 ```
 
-### Advanced Processing
+### Image Transformations
 
 ```php
-use Sandstorm\LaravelImagor\Enums\SourceUrlMode;
+// Flip images
+$url = imagor()
+    ->resize(width: 400, height: 300)
+    ->flipHorizontally()
+    ->flipVertically() 
+    ->build($imageUrl);
 
-// Plain URL mode for debugging
-$url = imgproxy('https://example.com/image.jpg')
-    ->setMode(SourceUrlMode::PLAIN)
-    ->setWidth(300)
-    ->setHeight(200)
-    ->build();
+// Add padding (left, top, right, bottom)
+$url = imagor()
+    ->resize(width: 400, height: 300)
+    ->padding(10, 10, 10, 10)
+    ->build($imageUrl);
 
-// Custom processing options
-$url = imgproxy('https://example.com/image.jpg')
-    ->setProcessing('rs:fill:400:300:1/rt:fit/q:85/bl:2.0')
-    ->build();
+// Set alignment for cropping
+$url = imagor()
+    ->resize(width: 400, height: 300)
+    ->hAlign('left')         // 'left', 'right', 'center'
+    ->vAlign('top')          // 'top', 'bottom', 'middle'
+    ->build($imageUrl);
 ```
 
 ### Method Chaining Examples
 
 ```php
 // Complete image optimization pipeline
-$optimizedUrl = imgproxy($originalImage)
-    ->setWidth(800)
-    ->setHeight(600)
-    ->setResizeType(ResizeType::FILL)
-    ->setExtension(OutputExtension::WEBP)
-    ->setQuality(85)
-    ->setSharpen(1.0)
-    ->setDpr(2)
-    ->build();
+$optimizedUrl = imagor()
+    ->resize(width: 800, height: 600)
+    ->fitIn()
+    ->quality(85)
+    ->format('webp')
+    ->sharpen(1.0)
+    ->brightness(5)
+    ->contrast(105)
+    ->build($originalImage);
 
 // Portrait enhancement
-$portraitUrl = imgproxy($portrait)
-    ->setWidth(400)
-    ->setHeight(600)
-    ->setResizeType(ResizeType::FILL)
-    ->setBrightness(10)
-    ->setContrast(1.1)
-    ->setSaturation(1.05)
-    ->setQuality(90)
-    ->build();
+$portraitUrl = imagor()
+    ->resize(width: 400, height: 600)
+    ->smart()
+    ->brightness(10)
+    ->contrast(110)
+    ->saturation(105)
+    ->sharpen(0.8)
+    ->quality(90)
+    ->build($portrait);
 ```
 
 ## API Reference
 
 ### Available Methods
 
-| Method                               | Parameters        | Description                     |
-| ------------------------------------ | ----------------- | ------------------------------- |
-| `url(string $url)`                   | Image URL         | Set the source image URL        |
-| `setWidth(int $width)`               | Width in pixels   | Set image width                 |
-| `setHeight(int $height)`             | Height in pixels  | Set image height                |
-| `setResizeType(ResizeType $type)`    | Resize mode       | Set how image should be resized |
-| `setExtension(OutputExtension $ext)` | Output format     | Set output image format         |
-| `setDpr(int $dpr)`                   | 1-8               | Set device pixel ratio          |
-| `setQuality(int $quality)`           | 0-100             | Set compression quality         |
-| `setBlur(float $sigma)`              | ≥0.0              | Apply blur effect               |
-| `setSharpen(float $sigma)`           | ≥0.0              | Apply sharpen effect            |
-| `setBrightness(int $brightness)`     | -255 to 255       | Adjust brightness               |
-| `setContrast(float $contrast)`       | ≥0.0              | Adjust contrast                 |
-| `setSaturation(float $saturation)`   | ≥0.0              | Adjust saturation               |
-| `setMode(SourceUrlMode $mode)`       | `encoded`/`plain` | Set URL encoding mode           |
-| `setProcessing(string $options)`     | Processing string | Custom processing options       |
-| `build()`                            | -                 | Generate final URL              |
+| Method                                          | Parameters              | Description                           |
+| ----------------------------------------------- | ----------------------- | ------------------------------------- |
+| `resize(int $width, int $height)`               | Width, height in pixels | Set image dimensions                  |
+| `crop(int $a, int $b, int $c, int $d)`          | Coordinates             | Manual crop (left, top, right, bottom) |
+| `fitIn()`                                       | -                       | Fit image within dimensions           |
+| `stretch()`                                     | -                       | Force resize without aspect ratio     |
+| `smart()`                                       | -                       | Smart focal point detection           |
+| `trim()`                                        | -                       | Remove surrounding whitespace         |
+| `flipHorizontally()`                            | -                       | Flip image horizontally               |
+| `flipVertically()`                              | -                       | Flip image vertically                 |
+| `padding(int $left, int $top, int $right, int $bottom)` | Padding values          | Add padding around image              |
+| `hAlign(string $align)`                         | 'left', 'right', 'center' | Horizontal alignment                  |
+| `vAlign(string $align)`                         | 'top', 'bottom', 'middle' | Vertical alignment                    |
+| `quality(int $quality)`                         | 0-100                   | Set JPEG quality                      |
+| `format(string $format)`                        | Format string           | Set output format                     |
+| `blur(float $sigma)`                            | ≥0.0                    | Apply blur effect                     |
+| `sharpen(float $sigma)`                         | ≥0.0                    | Apply sharpen effect                  |
+| `brightness(int $amount)`                       | -255 to 255             | Adjust brightness                     |
+| `contrast(int $amount)`                         | Percentage              | Adjust contrast                       |
+| `saturation(int $amount)`                       | Percentage              | Adjust saturation                     |
+| `addFilter(string $name, ...$args)`             | Filter name and args    | Add custom filter                     |
+| `build(string $sourceImage)`                    | Image URL               | Generate final URL                    |
 
-### Enums
+### Supported Formats
 
-#### ResizeType
-
--   `ResizeType::FIT` - Resize keeping aspect ratio to fit dimensions
--   `ResizeType::FILL` - Resize keeping aspect ratio to fill dimensions (crops overflow)
--   `ResizeType::FILL_DOWN` - Same as fill, but maintains requested aspect ratio for smaller images
--   `ResizeType::FORCE` - Resize without keeping aspect ratio
--   `ResizeType::AUTO` - Automatically choose between fit/fill based on orientation
-
-#### OutputExtension
-
--   `OutputExtension::JPEG` - JPEG format
--   `OutputExtension::PNG` - PNG format
--   `OutputExtension::WEBP` - WebP format
--   `OutputExtension::AVIF` - AVIF format
--   `OutputExtension::GIF` - GIF format
--   `OutputExtension::ICO` - ICO format
--   `OutputExtension::SVG` - SVG format
--   `OutputExtension::HEIC` - HEIC format
--   `OutputExtension::BMP` - BMP format
--   `OutputExtension::TIFF` - TIFF format
-
-#### SourceUrlMode
-
--   `SourceUrlMode::ENCODED` - Base64 encode source URL (default)
--   `SourceUrlMode::PLAIN` - Use plain text URL
-
-## Error Handling
-
-The package includes comprehensive validation and will throw `InvalidArgumentException` for invalid parameters:
-
-```php
-try {
-    $url = imgproxy('invalid-url')
-        ->setQuality(150)  // Invalid: > 100
-        ->build();
-} catch (InvalidArgumentException $e) {
-    // Handle validation error
-    echo $e->getMessage(); // "Quality must be between 0 and 100"
-}
-```
-
-For invalid URLs, the package gracefully returns the original URL instead of throwing an exception.
-
-## Troubleshooting
-
-### Common Issues
-
-**Problem**: Getting "insecure" URLs instead of signed URLs
-
-```
-http://localhost:8080/insecure/width:300/height:200/...
-```
-
-**Solution**: Ensure `IMGPROXY_KEY` and `IMGPROXY_SALT` are set in your `.env` file with valid hex values.
-
-**Problem**: Invalid hex key/salt errors
-
-```
-InvalidArgumentException: The key must be a hex-encoded string.
-```
-
-**Solution**: Generate proper hex keys:
-
-```bash
-# Generate 32-byte hex key and salt
-openssl rand -hex 32
-```
-
-**Problem**: Images not loading/404 errors
-**Solutions**:
-
--   Verify ImgProxy server is running at the configured endpoint
--   Check source image URLs are accessible
--   Ensure ImgProxy server can reach source URLs (firewall/network issues)
-
-**Problem**: Poor image quality  
-**Solutions**:
-
--   Increase quality setting: `->setQuality(90)`
--   Use appropriate output format: `->setExtension(OutputExtension::WEBP)`
--   Avoid excessive sharpening: `->setSharpen(1.0)` instead of higher values
-
-### Debug Mode
-
-Enable plain URL mode for debugging:
-
-```php
-$debugUrl = imgproxy('https://example.com/image.jpg')
-    ->setMode(SourceUrlMode::PLAIN)
-    ->setWidth(300)
-    ->build();
-
-echo $debugUrl;
-// Output: http://localhost:8080/signature/width:300/plain/https://example.com/image.jpg@jpg
-```
+- `jpeg` - JPEG format
+- `png` - PNG format
+- `gif` - GIF format
+- `webp` - WebP format
+- `avif` - AVIF format
+- `jxl` - JPEG XL format
+- `tiff` - TIFF format
+- `jp2` - JPEG 2000 format
 
 ## Advanced Usage & Patterns
 
 ### Performance Optimization
 
-Choose optimal quality settings based on image use case:
-
 ```php
 // Thumbnails - prioritize small file size
-$thumbnail = imgproxy($image)
-    ->setWidth(150)
-    ->setHeight(150)
-    ->setQuality(60)
-    ->setExtension(OutputExtension::WEBP)
-    ->build();
+$thumbnail = imagor()
+    ->resize(width: 150, height: 150)
+    ->quality(60)
+    ->format('webp')
+    ->build($image);
 
 // Hero images - balance quality and size
-$hero = imgproxy($image)
-    ->setWidth(1920)
-    ->setHeight(1080)
-    ->setQuality(85)
-    ->setExtension(OutputExtension::WEBP)
-    ->build();
+$hero = imagor()
+    ->resize(width: 1920, height: 1080)
+    ->fitIn()
+    ->quality(85)
+    ->format('webp')
+    ->build($image);
 
 // Product images - prioritize quality
-$product = imgproxy($image)
-    ->setWidth(800)
-    ->setHeight(600)
-    ->setQuality(95)
-    ->setSharpen(0.5)
-    ->build();
-```
-
-### Format Selection Strategy
-
-```php
-// Modern browsers - use AVIF for best compression
-$avifUrl = imgproxy($image)
-    ->setExtension(OutputExtension::AVIF)
-    ->setQuality(75)  // AVIF allows lower quality with better visual results
-    ->build();
-
-// Fallback for older browsers - use WebP
-$webpUrl = imgproxy($image)
-    ->setExtension(OutputExtension::WEBP)
-    ->setQuality(85)
-    ->build();
-
-// Universal fallback - use JPEG
-$jpegUrl = imgproxy($image)
-    ->setExtension(OutputExtension::JPEG)
-    ->setQuality(90)
-    ->build();
+$product = imagor()
+    ->resize(width: 800, height: 600)
+    ->smart()
+    ->quality(95)
+    ->sharpen(0.5)
+    ->build($image);
 ```
 
 ### Laravel Integration
@@ -365,18 +254,18 @@ Create custom Blade directives for common use cases:
 // In AppServiceProvider::boot()
 use Illuminate\Support\Facades\Blade;
 
-Blade::directive('imgproxy', function ($expression) {
-    return "<?php echo imgproxy($expression)->build(); ?>";
+Blade::directive('imagor', function ($expression) {
+    return "<?php echo imagor()->resize(width: 400)->build($expression); ?>";
 });
 
 Blade::directive('avatar', function ($expression) {
-    return "<?php echo imgproxy($expression)->setWidth(150)->setHeight(150)->setResizeType(\Sandstorm\LaravelImagor\Enums\ResizeType::FILL)->build(); ?>";
+    return "<?php echo imagor()->resize(width: 150, height: 150)->smart()->build($expression); ?>";
 });
 ```
 
 ```blade
 {{-- Usage in Blade templates --}}
-<img src="@imgproxy($product->image)" alt="Product">
+<img src="@imagor($product->image)" alt="Product">
 <img src="@avatar($user->avatar)" alt="User Avatar">
 ```
 
@@ -393,13 +282,25 @@ class User extends Model
             return '/default-avatar.png';
         }
 
-        return imgproxy($this->avatar)
-            ->setWidth(150)
-            ->setHeight(150)
-            ->setResizeType(ResizeType::FILL)
-            ->setExtension(OutputExtension::WEBP)
-            ->setQuality(85)
-            ->build();
+        return imagor()
+            ->resize(width: 150, height: 150)
+            ->smart()
+            ->format('webp')
+            ->quality(85)
+            ->build($this->avatar);
+    }
+
+    public function getAvatarThumbnailAttribute(): string
+    {
+        if (!$this->avatar) {
+            return '/default-avatar.png';
+        }
+
+        return imagor()
+            ->resize(width: 50, height: 50)
+            ->smart()
+            ->quality(70)
+            ->build($this->avatar);
     }
 }
 ```
@@ -417,9 +318,9 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'avatar' => [
-                'small' => imgproxy($this->avatar)->setWidth(50)->setHeight(50)->build(),
-                'medium' => imgproxy($this->avatar)->setWidth(150)->setHeight(150)->build(),
-                'large' => imgproxy($this->avatar)->setWidth(300)->setHeight(300)->build(),
+                'small' => imagor()->resize(width: 50, height: 50)->build($this->avatar),
+                'medium' => imagor()->resize(width: 150, height: 150)->build($this->avatar),
+                'large' => imagor()->resize(width: 300, height: 300)->build($this->avatar),
             ],
         ];
     }
@@ -427,28 +328,6 @@ class UserResource extends JsonResource
 ```
 
 ### Common Patterns
-
-#### Avatar Processing
-
-```php
-class UserAvatar
-{
-    public static function generate(string $imageUrl, int $size = 150): string
-    {
-        return imgproxy($imageUrl)
-            ->setWidth($size)
-            ->setHeight($size)
-            ->setResizeType(ResizeType::FILL)
-            ->setExtension(OutputExtension::WEBP)
-            ->setQuality(85)
-            ->setSharpen(0.5)
-            ->build();
-    }
-}
-
-// Usage
-$avatarUrl = UserAvatar::generate($user->profile_image, 200);
-```
 
 #### Responsive Images
 
@@ -462,13 +341,12 @@ class ResponsiveImage
         $srcset = [];
 
         foreach ($sizes as $width) {
-            $url = imgproxy($imageUrl)
-                ->setWidth($width)
-                ->setHeight(intval($width * 0.75)) // 4:3 aspect ratio
-                ->setResizeType(ResizeType::FILL)
-                ->setExtension(OutputExtension::WEBP)
-                ->setQuality(85)
-                ->build();
+            $url = imagor()
+                ->resize(width: $width, height: intval($width * 0.75)) // 4:3 aspect ratio
+                ->smart()
+                ->format('webp')
+                ->quality(85)
+                ->build($imageUrl);
 
             $srcset[] = "{$url} {$width}w";
         }
@@ -484,7 +362,7 @@ $srcsetString = implode(', ', $srcset);
 ```
 
 ```blade
-<img src="{{ imgproxy($image)->setWidth(800)->build() }}"
+<img src="{{ imagor()->resize(width: 800)->build($image) }}"
      srcset="{{ $srcsetString }}"
      sizes="(max-width: 768px) 100vw, 50vw"
      alt="Responsive image">
@@ -496,88 +374,40 @@ $srcsetString = implode(', ', $srcset);
 
 ```php
 // Portrait enhancement
-$enhancedPortrait = imgproxy($portrait)
-    ->setWidth(600)
-    ->setHeight(800)
-    ->setResizeType(ResizeType::FILL)
-    ->setBrightness(8)       // Slightly brighter
-    ->setContrast(1.1)       // Enhanced contrast
-    ->setSaturation(1.05)    // Subtle saturation boost
-    ->setSharpen(0.8)        // Gentle sharpening
-    ->setQuality(92)
-    ->build();
+$enhancedPortrait = imagor()
+    ->resize(width: 600, height: 800)
+    ->smart()
+    ->brightness(8)       // Slightly brighter
+    ->contrast(110)       // Enhanced contrast
+    ->saturation(105)     // Subtle saturation boost
+    ->sharpen(0.8)        // Gentle sharpening
+    ->quality(92)
+    ->build($portrait);
 
-// High contrast black and white
-$highContrastBW = imgproxy($image)
-    ->setWidth(800)
-    ->setHeight(600)
-    ->setSaturation(0)       // Remove all color
-    ->setContrast(1.5)       // High contrast
-    ->setBrightness(-5)      // Slightly darker
-    ->setSharpen(2.0)        // Sharp details
-    ->build();
+// Vintage effect
+$vintageEffect = imagor()
+    ->resize(width: 600, height: 400)
+    ->saturation(70)      // Reduced saturation
+    ->contrast(90)        // Lower contrast
+    ->brightness(-10)     // Slightly darker
+    ->quality(85)
+    ->build($image);
 ```
 
 #### E-commerce Optimization
 
 ```php
 // Clean product photos
-$productClean = imgproxy($product)
-    ->setWidth(800)
-    ->setHeight(800)
-    ->setResizeType(ResizeType::FIT)
-    ->setBrightness(15)      // Bright and clean
-    ->setContrast(1.1)       // Good contrast
-    ->setSharpen(1.5)        // Sharp product details
-    ->setQuality(95)         // High quality for products
-    ->setExtension(OutputExtension::WEBP)
-    ->build();
-```
-
-### Security Best Practices
-
-#### Environment Configuration
-
-```bash
-# Use strong, unique keys
-IMGPROXY_KEY=$(openssl rand -hex 32)
-IMGPROXY_SALT=$(openssl rand -hex 32)
-
-# Use HTTPS in production
-IMGPROXY_ENDPOINT=https://imgproxy.yoursite.com
-
-# Consider using encoded mode for security
-IMGPROXY_DEFAULT_SOURCE_URL_MODE=encoded
-```
-
-#### URL Validation
-
-Always validate source URLs before processing:
-
-```php
-class ImageProcessor
-{
-    private array $allowedDomains = [
-        'your-cdn.com',
-        'storage.googleapis.com',
-        's3.amazonaws.com',
-    ];
-
-    public function processImage(string $imageUrl): string
-    {
-        $parsedUrl = parse_url($imageUrl);
-
-        if (!in_array($parsedUrl['host'], $this->allowedDomains)) {
-            throw new InvalidArgumentException('Image domain not allowed');
-        }
-
-        return imgproxy($imageUrl)
-            ->setWidth(800)
-            ->setHeight(600)
-            ->setQuality(85)
-            ->build();
-    }
-}
+$productClean = imagor()
+    ->resize(width: 800, height: 800)
+    ->fitIn()
+    ->trim()              // Remove whitespace
+    ->brightness(15)      // Bright and clean
+    ->contrast(110)       // Good contrast
+    ->sharpen(1.5)        // Sharp product details
+    ->quality(95)         // High quality for products
+    ->format('webp')
+    ->build($product);
 ```
 
 ## Testing
@@ -588,12 +418,6 @@ class ImageProcessor
 # Run all tests
 composer test
 
-# Run only unit tests
-composer test --filter=ImgProxyTest
-
-# Run only integration tests  
-composer test --filter=WorkbenchIntegrationTest
-
 # Run with coverage
 composer test-coverage
 ```
@@ -603,7 +427,7 @@ composer test-coverage
 The package includes a comprehensive workbench environment for interactive testing:
 
 ```bash
-# Build and start the workbench server
+# Start the workbench server
 composer start
 
 # Or build separately and serve
@@ -618,56 +442,50 @@ Once the server is running (typically at `http://localhost:8000`), you can acces
 - **Test Overview**: `http://localhost:8000/imgproxy-test/` - JSON overview of all available tests
 - **Basic Test**: `http://localhost:8000/imgproxy-test/basic` - Basic URL generation testing
 - **Effects Test**: `http://localhost:8000/imgproxy-test/effects` - Quality and visual effects testing
-- **Formats Test**: `http://localhost:8000/imgproxy-test/formats` - Format conversion (JPEG, PNG, WebP, AVIF)
+- **Formats Test**: `http://localhost:8000/imgproxy-test/formats` - Format conversion testing
 - **Resize Test**: `http://localhost:8000/imgproxy-test/resize` - Different resize types comparison
-- **Facade vs Helper**: `http://localhost:8000/imgproxy-test/facade-vs-helper` - Compare facade and helper output
-- **Config Test**: `http://localhost:8000/imgproxy-test/config` - Configuration validation
-- **Error Handling**: `http://localhost:8000/imgproxy-test/error-handling` - Error scenarios testing
-- **Performance Test**: `http://localhost:8000/imgproxy-test/performance` - Performance benchmarks
+- **Quality Test**: `http://localhost:8000/imgproxy-test/quality` - Quality comparison testing
+- **Visual Effects**: `http://localhost:8000/imgproxy-test/visual-effects` - Visual effects testing
+- **Complex Processing**: `http://localhost:8000/imgproxy-test/complex` - Complex processing testing
 
 #### Visual Testing
 
 - **Visual Test Suite**: `http://localhost:8000/imgproxy-visual-test` - Complete browser-based visual testing
 
 The visual test page includes:
-- **Real Image Processing** - See actual ImgProxy results with sample images
+- **Real Image Processing** - See actual Imagor results with sample images
 - **Quality Comparison** - Side-by-side quality levels (30%, 70%, 95%)
 - **Format Comparison** - Visual differences between JPEG, PNG, WebP, AVIF
-- **Resize Types Demo** - Visual behavior of fit, fill, force, auto modes
+- **Resize Types Demo** - Visual behavior of fit, fill, force, smart modes
 - **Effects Showcase** - Blur, sharpen, saturation, brightness effects
 - **Complex Processing** - Portrait enhancement and vintage effects
-- **High DPI Examples** - Standard vs 2x DPI comparisons
 
-### Test Coverage
 
-The package includes **39 comprehensive tests** with **145 assertions** covering:
+## Troubleshooting
 
-- ✅ **Unit Tests** (26 tests) - Core functionality, validation, edge cases
-- ✅ **Integration Tests** (13 tests) - Laravel environment, HTTP endpoints, service provider registration
-- ✅ **Architecture Tests** (7 tests) - Code structure, security, conventions
-- ✅ **Visual Tests** - Browser-based real image processing validation
-- ✅ **Performance Tests** - URL generation speed benchmarks (>1000 URLs/second)
+### Common Issues
 
-### Sample Test Responses
+**Problem**: Getting "unsafe" URLs instead of signed URLs
 
-**Basic Test Response:**
-```json
-{
-    "original": "https://picsum.photos/800/600",
-    "processed": "http://localhost:8080/signed-url/width:400/height:300/...",
-    "test": "basic_url_generation"
-}
+```
+http://localhost:8000/unsafe/400x300/...
 ```
 
-**Performance Test Response:**
-```json
-{
-    "urls_generated": 100,
-    "duration_seconds": 0.0089,
-    "urls_per_second": 1123.6,
-    "test": "performance"
-}
-```
+**Solution**: Ensure `IMAGOR_SECRET` is set in your `.env` file.
+
+**Problem**: Images not loading/404 errors
+**Solutions**:
+
+- Verify Imagor server is running at the configured base URL
+- Check source image URLs are accessible
+- Ensure Imagor server can reach source URLs (firewall/network issues)
+
+**Problem**: Poor image quality  
+**Solutions**:
+
+- Increase quality setting: `->quality(90)`
+- Use appropriate output format: `->format('webp')`
+- Avoid excessive sharpening: `->sharpen(1.0)` instead of higher values
 
 ## Changelog
 
@@ -683,8 +501,9 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
--   [Imam Susanto](https://github.com/imsus)
--   [All Contributors](../../contributors)
+- [Imam Susanto](https://github.com/imsus) for the original package
+- [Sandstorm Media](https://github.com/sandstorm) for the Imagor fork
+- [All Contributors](../../contributors)
 
 ## License
 
