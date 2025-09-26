@@ -1,0 +1,6 @@
+providers:
+  - Workbench\App\Providers\WorkbenchServiceProvider
+
+workbench:
+  discovers:
+    views: true
