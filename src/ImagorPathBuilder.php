@@ -269,7 +269,7 @@ class ImagorPathBuilder
         if ($this->smart) {
             $decodedPathSegments[] = 'smart';
         }
-        $this->addFilter('quality', 95);
+
         if (!empty($this->filters)) {
             $decodedPathSegments[] = 'filters:' . implode(':', $this->filters);
         }

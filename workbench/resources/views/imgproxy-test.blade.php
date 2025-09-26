@@ -39,21 +39,43 @@
 
             <!-- Quality Comparison -->
             <div class="mb-8">
-                <h3 class="text-lg font-medium mb-3 text-gray-700">Quality Comparison</h3>
+                <h3 class="text-lg font-medium mb-3 text-gray-700">Quality Comparison WEBP</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <h4 class="font-medium mb-2">Low Quality (30%)</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(30)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 600, height: 500)->quality(30)->format('webp')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Low Quality" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">Medium Quality (70%)</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(70)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 600, height: 500)->quality(70)->format('webp')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Medium Quality" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">High Quality (95%)</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(95)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 600, height: 500)->quality(95)->format('webp')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                             alt="High Quality" class="border rounded shadow-sm w-full">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quality Comparison -->
+            <div class="mb-8">
+                <h3 class="text-lg font-medium mb-3 text-gray-700">Quality Comparison JPEG</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <h4 class="font-medium mb-2">Low Quality (30%)</h4>
+                        <img src="{{ imagor()->resize(width: 600, height: 500)->quality(30)->format('jpeg')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                             alt="Low Quality" class="border rounded shadow-sm w-full">
+                    </div>
+                    <div>
+                        <h4 class="font-medium mb-2">Medium Quality (70%)</h4>
+                        <img src="{{ imagor()->resize(width: 600, height: 500)->quality(70)->format('jpeg')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                             alt="Medium Quality" class="border rounded shadow-sm w-full">
+                    </div>
+                    <div>
+                        <h4 class="font-medium mb-2">High Quality (95%)</h4>
+                        <img src="{{ imagor()->resize(width: 600, height: 500)->quality(95)->format('jpeg')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="High Quality" class="border rounded shadow-sm w-full">
                     </div>
                 </div>

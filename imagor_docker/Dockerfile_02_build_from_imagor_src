@@ -6,32 +6,7 @@ ARG VIPS_VERSION=8.17.2
 ARG TARGETARCH
 ARG ENABLE_MAGICK=false
 
-ARG MOZJPEG_VERSION=4.1.1
-ARG MOZJPEG_URL=https://github.com/mozilla/mozjpeg/archive
-
-
 ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-
-ADD ${MOZJPEG_URL}/v${MOZJPEG_VERSION}.tar.gz /tmp/
-WORKDIR /tmp
-
-
-RUN DEBIAN_FRONTEND=noninteractive \
-  apt-get update && \
-  apt-get install --no-install-recommends -y  build-essential libboost-all-dev pkg-config  autoconf automake libtool nasm make cmake flex
-
-RUN DEBIAN_FRONTEND=noninteractive \
-  apt-get install --no-install-recommends -y  libpng-tools libpng-dev zlib1g-dev
-
-RUN tar xf v${MOZJPEG_VERSION}.tar.gz \
-  && cd mozjpeg-${MOZJPEG_VERSION} \
-  && cmake -G"Unix Makefiles" . \
-  && make -j4 \
-  && make install \
-  && cp jpegint.h /usr/include/jpegint.h \
-  && cd .. \
-  && rm -rf mozjpeg
-
 
 # Installs libvips + required libraries + conditionally ImageMagick
 RUN DEBIAN_FRONTEND=noninteractive \
@@ -49,7 +24,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install --no-install-recommends -y libmagickwand-dev; \
   fi && \
   cd /tmp && \
-    export PKG_CONFIG_PATH=/opt/mozjpeg/lib64/pkgconfig/ && \
     curl -fsSLO https://github.com/libvips/libvips/releases/download/v${VIPS_VERSION}/vips-${VIPS_VERSION}.tar.xz && \
     tar xf vips-${VIPS_VERSION}.tar.xz && \
     cd vips-${VIPS_VERSION} && \
@@ -68,9 +42,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
   rm -rf /usr/local/lib/*.a && \
   rm -rf /usr/local/lib/*.la
 
-ENV PKG_CONFIG_PATH=/opt/mozjpeg/lib64/pkgconfig/ \
-    LD_LIBRARY_PATH=/opt/mozjpeg/lib64
-
 WORKDIR ${GOPATH}/src/github.com/cshum/imagor
 
 
@@ -87,10 +58,6 @@ ARG ENABLE_MAGICK=false
 
 COPY --from=builder /usr/local/lib /usr/local/lib
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
-COPY --from=builder /opt/mozjpeg /opt/mozjpeg
-
-ENV PKG_CONFIG_PATH=/opt/mozjpeg/lib64/pkgconfig/ \
-    LD_LIBRARY_PATH=/opt/mozjpeg/lib64
 
 # Install runtime dependencies including conditionally ImageMagick
 RUN DEBIAN_FRONTEND=noninteractive \
@@ -125,33 +92,3 @@ ENTRYPOINT ["/usr/local/bin/imagor"]
 
 EXPOSE ${PORT}
 
-
-
-
-
-
-USER root
-
-# Install xz-utils before extracting
-RUN apt-get update && apt-get install -y xz-utils && rm -rf /var/lib/apt/lists/*
-
-# add the s6 overlay
-ARG S6_OVERLAY_VERSION=3.2.1.0
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz
-
-# add supercronic
-ADD https://github.com/aptible/supercronic/releases/download/v0.2.34/supercronic-linux-amd64 /tmp
-RUN echo "e8631edc1775000d119b70fd40339a7238eece14 /tmp/supercronic-linux-amd64" | sha1sum -c - && \
-    chmod +x /tmp/supercronic-linux-amd64 && \
-    mv /tmp/supercronic-linux-amd64 /usr/local/bin/supercronic
-
-# Copy s6 service configurations
-COPY services/ /etc/s6-overlay/s6-rc.d
-
-# Copy crontab
-COPY crontab /etc/crontab
-
-ENTRYPOINT ["/init"]

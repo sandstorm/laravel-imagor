@@ -4,6 +4,8 @@ services:
   imagor:
     build:
       context: ./imagor_docker
+      # dockerfile: Dockerfile_00_default
+      # dockerfile: Dockerfile_02_build_from_imagor_src
     env_file:
       - './imagor_docker/imagor.env'
     environment:
@@ -12,7 +14,6 @@ services:
       FILE_RESULT_STORAGE_EXPIRATION: 6h
       FILE_STORAGE_EXPIRATION: 6h
 
-      # TODO: working???
       VIPS_MOZJPEG: 1
     volumes:
       - imagor_cache:/mnt/imagor_cache
