@@ -3,4 +3,5 @@ providers:
 
 workbench:
   discovers:
+    config: true
     views: true

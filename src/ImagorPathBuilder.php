@@ -19,9 +19,18 @@ class ImagorPathBuilder
     private ?string $vAlign = null;
     private bool $smart = false;
     private array $filters = [];
-    private ?string $secret = null;
-    private ?string $signerType = null;
-    private ?int $signerTruncate = null;
+
+    /**
+     * @internal use ImagorFactory::new() instead.
+     */
+    public function __construct(
+        private readonly string   $baseUrl,
+        private readonly string   $signerType,
+        private readonly string   $secret,
+        private readonly int|null $signerTruncate,
+    )
+    {
+    }
 
     /**
      * trim removes surrounding space in images using top-left pixel color
@@ -80,7 +89,7 @@ class ImagorPathBuilder
      * @param int $height
      * @return self
      */
-    public function resize(int $width, int $height): self
+    public function resize(int $width = 0, int $height = 0): self
     {
         $this->resizeWidth = $width;
         $this->resizeHeight = $height;
@@ -174,22 +183,51 @@ class ImagorPathBuilder
         return $this;
     }
 
-    public function secret(?string $secret): self
+    /**
+     * changes the overall quality of the image, does nothing for png
+     *
+     * amount 0 to 100, the quality level in %
+     *
+     * @param int $quality
+     * @return self
+     */
+    public function quality(int $quality): self
     {
-        $this->secret = $secret;
-        return $this;
+        return $this->addFilter('quality', $quality);
     }
 
-    public function signerType(?string $signerType): self
+    public function format(string $format): self
     {
-        $this->signerType = $signerType;
-        return $this;
+        assert(in_array($format, ['jpeg', 'png', 'gif', 'webp', 'avif', 'jxl', 'tiff', 'jp2']));
+        return $this->addFilter('format', $format);
     }
 
-    public function signerTruncate(?int $signerTruncate): self
+    public function blur(float $sigmaX, ?float $sigmaY = null): self
     {
-        $this->signerTruncate = $signerTruncate;
-        return $this;
+        if ($sigmaY === null) {
+            return $this->addFilter('blur', $sigmaX);
+        }
+        return $this->addFilter('blur', $sigmaX, $sigmaY);
+    }
+
+    public function sharpen(float $sigma): self
+    {
+        return $this->addFilter('sharpen', $sigma);
+    }
+
+    public function saturation(int $amount): self
+    {
+        return $this->addFilter('saturation', $amount);
+    }
+
+    public function brightness(int $amount): self
+    {
+        return $this->addFilter('brightness', $amount);
+    }
+
+    public function contrast(int $amount): self
+    {
+        return $this->addFilter('contrast', $amount);
     }
 
     public function build(string $sourceImage): string
@@ -252,7 +290,7 @@ class ImagorPathBuilder
         $decodedPath = implode('/', $decodedPathSegments);
 
         // eg N…mVw/30x40%3A100x150%2Ffilters%3Afill%28cyan%29/example.net/kisten-trippel_3_kw%282%29.jpg
-        return $this->hmac($decodedPath) . "/" . $encodedPath;
+        return $this->baseUrl . $this->hmac($decodedPath) . "/" . $encodedPath;
     }
 
     private function hmac(string $path): string

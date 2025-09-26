@@ -18,7 +18,7 @@ services:
       - imagor_cache:/mnt/imagor_cache
       # TODO: image itself: - :/app
     ports:
-      - 8000:8000
+      - 8001:8001
 
 
 volumes:

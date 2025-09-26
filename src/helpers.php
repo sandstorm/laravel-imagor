@@ -1,10 +1,11 @@
 <?php
 
-use Sandstorm\LaravelImagor\ImgProxy;
+use Sandstorm\LaravelImagor\ImagorFactory;
+use Sandstorm\LaravelImagor\ImagorPathBuilder;
 
-if (! function_exists('imgproxy')) {
-    function imgproxy(string $url): ImgProxy
+if (! function_exists('imagor')) {
+    function imagor(): ImagorPathBuilder
     {
-        return app(ImgProxy::class)->url($url);
+        return app(ImagorFactory::class)->new();
     }
 }

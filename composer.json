@@ -75,10 +75,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Sandstorm\\LaravelImagor\\ImgProxyServiceProvider"
+                "Sandstorm\\LaravelImagor\\ImagorServiceProvider"
             ],
             "aliases": {
-                "ImgProxy": "Sandstorm\\LaravelImagor\\Facades\\ImgProxy"
+                "Imagor": "Sandstorm\\LaravelImagor\\Facades\\Imagor"
             }
         }
     },
