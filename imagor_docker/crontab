@@ -1,0 +1,5 @@
+# At 01:00 every day - delete all files from imagor
+0 1 * * * rm -rf /mnt/data/input/* /mnt/data/results/*
+
+# At 01:20 every day - restart imagor
+20 1 * * * /command/s6-svc -r /run/s6-rc/servicedirs/imagor

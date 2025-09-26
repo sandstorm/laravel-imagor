@@ -1,0 +1,25 @@
+# helper tools
+
+services:
+  imagor:
+    build:
+      context: ./imagor_docker
+    env_file:
+      - './imagor_docker/imagor.env'
+    environment:
+      TZ: 'Europe/Berlin'
+      IMAGOR_AUTO_WEBP: 1
+      FILE_RESULT_STORAGE_EXPIRATION: 6h
+      FILE_STORAGE_EXPIRATION: 6h
+
+      # TODO: working???
+      VIPS_MOZJPEG: 1
+    volumes:
+      - imagor_cache:/mnt/imagor_cache
+      # TODO: image itself: - :/app
+    ports:
+      - 8000:8000
+
+
+volumes:
+  imagor_cache:
