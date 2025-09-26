@@ -1,12 +1,12 @@
 {
-    "name": "imsus/laravel-imgproxy",
-    "description": "Laravel integration for ImgProxy",
+    "name": "sandstorm/laravel-imagor",
+    "description": "Laravel integration for Imagor",
     "keywords": [
-        "Imam Susanto",
         "laravel",
-        "laravel-imgproxy"
+        "laravel-imagor",
+        "imagor"
     ],
-    "homepage": "https://github.com/imsus/laravel-imgproxy",
+    "homepage": "https://github.com/sandstorm/laravel-imagor",
     "license": "MIT",
     "authors": [
         {
