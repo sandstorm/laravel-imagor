@@ -34,12 +34,9 @@ class WorkbenchServiceProvider extends ServiceProvider
         Route::prefix('imgproxy-test')->group(function () {
             // Basic URL generation test
             Route::get('/basic', function () {
-                $imageUrl = 'https://picsum.photos/800/600';
+                $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
-                $processedUrl = imgproxy($imageUrl)
-                    ->setWidth(400)
-                    ->setHeight(300)
-                    ->build();
+                $processedUrl = imagor()->resize(width: 400, height: 300)->build($imageUrl);
 
                 return response()->json([
                     'original' => $imageUrl,
@@ -50,18 +47,17 @@ class WorkbenchServiceProvider extends ServiceProvider
 
             // Quality and effects test
             Route::get('/effects', function () {
-                $imageUrl = 'https://picsum.photos/800/600';
+                $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
-                $processedUrl = imgproxy($imageUrl)
-                    ->setWidth(500)
-                    ->setHeight(400)
-                    ->setQuality(85)
-                    ->setBlur(1.0)
-                    ->setSharpen(0.5)
-                    ->setBrightness(10)
-                    ->setContrast(1.1)
-                    ->setSaturation(1.05)
-                    ->build();
+                $processedUrl = imagor()
+                    ->resize(width: 500, height: 400)
+                    ->quality(85)
+                    ->blur(1.0)
+                    ->sharpen(0.5)
+                    ->brightness(10)
+                    ->contrast(1.1)
+                    ->saturation(1.05)
+                    ->build($imageUrl);
 
                 return response()->json([
                     'original' => $imageUrl,
@@ -80,13 +76,13 @@ class WorkbenchServiceProvider extends ServiceProvider
 
             // Format conversion test
             Route::get('/formats', function () {
-                $imageUrl = 'https://picsum.photos/800/600';
+                $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
                 $formats = [
-                    'jpeg' => imgproxy($imageUrl)->setWidth(300)->setExtension(OutputExtension::JPEG)->build(),
-                    'png' => imgproxy($imageUrl)->setWidth(300)->setExtension(OutputExtension::PNG)->build(),
-                    'webp' => imgproxy($imageUrl)->setWidth(300)->setExtension(OutputExtension::WEBP)->build(),
-                    'avif' => imgproxy($imageUrl)->setWidth(300)->setExtension(OutputExtension::AVIF)->build(),
+                    'jpeg' => imagor()->resize(width: 250)->format('jpeg')->build($imageUrl),
+                    'png' => imagor()->resize(width: 250)->format('png')->build($imageUrl),
+                    'webp' => imagor()->resize(width: 250)->format('webp')->build($imageUrl),
+                    'avif' => imagor()->resize(width: 250)->format('avif')->build($imageUrl),
                 ];
 
                 return response()->json([
@@ -98,13 +94,13 @@ class WorkbenchServiceProvider extends ServiceProvider
 
             // Resize types test
             Route::get('/resize', function () {
-                $imageUrl = 'https://picsum.photos/800/600';
+                $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
                 $resizeTypes = [
-                    'fit' => imgproxy($imageUrl)->setWidth(300)->setHeight(200)->setResizeType(ResizeType::FIT)->build(),
-                    'fill' => imgproxy($imageUrl)->setWidth(300)->setHeight(200)->setResizeType(ResizeType::FILL)->build(),
-                    'force' => imgproxy($imageUrl)->setWidth(300)->setHeight(200)->setResizeType(ResizeType::FORCE)->build(),
-                    'auto' => imgproxy($imageUrl)->setWidth(300)->setHeight(200)->setResizeType(ResizeType::AUTO)->build(),
+                    'fit' => imagor()->resize(width: 300, height: 200)->fitIn()->build($imageUrl),
+                    'fill' => imagor()->resize(width: 300, height: 200)->build($imageUrl),
+                    'force' => imagor()->resize(width: 300, height: 200)->stretch()->build($imageUrl),
+                    'auto' => imagor()->resize(width: 300, height: 200)->smart()->build($imageUrl),
                 ];
 
                 return response()->json([
@@ -114,99 +110,66 @@ class WorkbenchServiceProvider extends ServiceProvider
                 ]);
             });
 
-            // Facade vs Helper comparison
-            Route::get('/facade-vs-helper', function () {
-                $imageUrl = 'https://picsum.photos/800/600';
+            // Quality comparison test
+            Route::get('/quality', function () {
+                $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
-                // Using Facade
-                $facadeUrl = ImgProxy::url($imageUrl)
-                    ->setWidth(400)
-                    ->setHeight(300)
-                    ->setQuality(90)
-                    ->build();
-
-                // Using Helper
-                $helperUrl = imgproxy($imageUrl)
-                    ->setWidth(400)
-                    ->setHeight(300)
-                    ->setQuality(90)
-                    ->build();
+                $qualities = [
+                    'low' => imagor()->resize(width: 300, height: 200)->quality(30)->build($imageUrl),
+                    'medium' => imagor()->resize(width: 300, height: 200)->quality(70)->build($imageUrl),
+                    'high' => imagor()->resize(width: 300, height: 200)->quality(95)->build($imageUrl),
+                ];
 
                 return response()->json([
                     'original' => $imageUrl,
-                    'facade_result' => $facadeUrl,
-                    'helper_result' => $helperUrl,
-                    'urls_match' => $facadeUrl === $helperUrl,
-                    'test' => 'facade_vs_helper',
+                    'qualities' => $qualities,
+                    'test' => 'quality_comparison',
                 ]);
             });
 
-            // Configuration test
-            Route::get('/config', function () {
+            // Visual effects test
+            Route::get('/visual-effects', function () {
+                $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
+
+                $effects = [
+                    'blur' => imagor()->resize(width: 300)->blur(2.0)->build($imageUrl),
+                    'sharpen' => imagor()->resize(width: 300)->sharpen(2.0)->build($imageUrl),
+                    'saturated' => imagor()->resize(width: 300)->saturation(2.0)->build($imageUrl),
+                ];
+
                 return response()->json([
-                    'endpoint' => config('imgproxy.endpoint'),
-                    'has_key' => ! empty(config('imgproxy.key')),
-                    'has_salt' => ! empty(config('imgproxy.salt')),
-                    'default_source_url_mode' => config('imgproxy.default_source_url_mode'),
-                    'default_output_extension' => config('imgproxy.default_output_extension'),
-                    'test' => 'configuration',
+                    'original' => $imageUrl,
+                    'effects' => $effects,
+                    'test' => 'visual_effects',
                 ]);
             });
 
-            // Error handling test
-            Route::get('/error-handling', function () {
-                try {
-                    // This should return the original invalid URL
-                    $invalidUrl = imgproxy('not-a-valid-url')
-                        ->setWidth(300)
-                        ->build();
+            // Complex processing test
+            Route::get('/complex', function () {
+                $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
-                    // This should throw an exception
-                    $invalidQuality = null;
-                    try {
-                        imgproxy('https://picsum.photos/800/600')
-                            ->setQuality(150) // Invalid quality
-                            ->build();
-                    } catch (\InvalidArgumentException $e) {
-                        $invalidQuality = $e->getMessage();
-                    }
-
-                    return response()->json([
-                        'invalid_url_handling' => $invalidUrl,
-                        'invalid_quality_error' => $invalidQuality,
-                        'test' => 'error_handling',
-                    ]);
-                } catch (\Exception $e) {
-                    return response()->json([
-                        'error' => $e->getMessage(),
-                        'test' => 'error_handling',
-                    ], 500);
-                }
-            });
-
-            // Performance test
-            Route::get('/performance', function () {
-                $imageUrl = 'https://picsum.photos/800/600';
-                $start = microtime(true);
-
-                // Generate 100 URLs to test performance
-                $urls = [];
-                for ($i = 0; $i < 100; $i++) {
-                    $urls[] = imgproxy($imageUrl)
-                        ->setWidth(300 + $i)
-                        ->setHeight(200 + $i)
-                        ->setQuality(80 + ($i % 20))
-                        ->build();
-                }
-
-                $duration = microtime(true) - $start;
+                $complex = [
+                    'portrait_enhanced' => imagor()
+                        ->resize(width: 300, height: 400)
+                        ->brightness(10)
+                        ->contrast(1.1)
+                        ->saturation(1.05)
+                        ->sharpen(0.8)
+                        ->quality(92)
+                        ->build($imageUrl),
+                    'vintage_effect' => imagor()
+                        ->resize(width: 300, height: 400)
+                        ->saturation(0.7)
+                        ->contrast(0.9)
+                        ->brightness(-10)
+                        ->quality(85)
+                        ->build($imageUrl),
+                ];
 
                 return response()->json([
-                    'urls_generated' => count($urls),
-                    'duration_seconds' => round($duration, 4),
-                    'urls_per_second' => round(count($urls) / $duration, 2),
-                    'sample_urls' => array_slice($urls, 0, 3),
-                    'test' => 'performance',
+                    'original' => $imageUrl,
+                    'complex_processing' => $complex,
+                    'test' => 'complex_processing',
                 ]);
             });
 
@@ -219,10 +182,11 @@ class WorkbenchServiceProvider extends ServiceProvider
                         '/imgproxy-test/effects' => 'Quality and effects testing',
                         '/imgproxy-test/formats' => 'Format conversion testing',
                         '/imgproxy-test/resize' => 'Resize types testing',
-                        '/imgproxy-test/facade-vs-helper' => 'Facade vs Helper comparison',
-                        '/imgproxy-test/config' => 'Configuration testing',
                         '/imgproxy-test/error-handling' => 'Error handling testing',
                         '/imgproxy-test/performance' => 'Performance testing',
+                        '/imgproxy-test/quality' => 'Quality comparison testing',
+                        '/imgproxy-test/visual-effects' => 'Visual effects testing',
+                        '/imgproxy-test/complex' => 'Complex processing testing',
                     ],
                     'usage' => 'Visit any of the test endpoints to see ImgProxy in action',
                     'visual_tests' => 'Visit /imgproxy-visual-test for browser-based visual testing',

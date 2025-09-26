@@ -25,8 +25,8 @@ class ImagorPathBuilder
      */
     public function __construct(
         private readonly string   $baseUrl,
-        private readonly string   $signerType,
-        private readonly string   $secret,
+        private readonly string|null   $signerType,
+        private readonly string|null   $secret,
         private readonly int|null $signerTruncate,
     )
     {
@@ -290,7 +290,7 @@ class ImagorPathBuilder
         $decodedPath = implode('/', $decodedPathSegments);
 
         // eg N…mVw/30x40%3A100x150%2Ffilters%3Afill%28cyan%29/example.net/kisten-trippel_3_kw%282%29.jpg
-        return $this->baseUrl . $this->hmac($decodedPath) . "/" . $encodedPath;
+        return rtrim($this->baseUrl, '/') . '/' . $this->hmac($decodedPath) . "/" . $encodedPath;
     }
 
     private function hmac(string $path): string
