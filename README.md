@@ -102,43 +102,43 @@ IMAGOR_SIGNER_TRUNCATE=null
 
 ```php
 // Generate URL using helper function
-$url = imagor()->resize(width: 400, height: 300)->build('https://example.com/image.jpg');
+$url = imagor()->resize(width: 400, height: 300)->uriFor('https://example.com/image.jpg');
 
 // Or using the fluent API
 $url = imagor()
     ->resize(width: 400, height: 300)
-    ->build('https://example.com/image.jpg');
+    ->uriFor('https://example.com/image.jpg');
 ```
 
 ### Resizing & Cropping
 
 ```php
 // Basic resizing
-$url = imagor()->resize(width: 400, height: 300)->build($imageUrl);
+$url = imagor()->resize(width: 400, height: 300)->uriFor($imageUrl);
 
 // Fit image within dimensions (preserves aspect ratio)
-$url = imagor()->resize(width: 400, height: 300)->fitIn()->build($imageUrl);
+$url = imagor()->resize(width: 400, height: 300)->fitIn()->uriFor($imageUrl);
 
 // Force stretch to exact dimensions (does NOT preserve aspect ratio)
-$url = imagor()->resize(width: 400, height: 300)->stretch()->build($imageUrl);
+$url = imagor()->resize(width: 400, height: 300)->stretch()->uriFor($imageUrl);
 
 // Smart cropping with focal point detection
-$url = imagor()->resize(width: 400, height: 300)->smart()->build($imageUrl);
+$url = imagor()->resize(width: 400, height: 300)->smart()->uriFor($imageUrl);
 
 // Manual cropping (left, top, right, bottom)
-$url = imagor()->crop(10, 10, 300, 200)->build($imageUrl);
+$url = imagor()->crop(10, 10, 300, 200)->uriFor($imageUrl);
 ```
 
 ### Quality & Format Control
 
 ```php
 // Set JPEG quality
-$url = imagor()->resize(width: 400)->quality(85)->build($imageUrl);
+$url = imagor()->resize(width: 400)->quality(85)->uriFor($imageUrl);
 
 // Convert to different formats
-$webpUrl = imagor()->resize(width: 400)->format('webp')->build($imageUrl);
-$avifUrl = imagor()->resize(width: 400)->format('avif')->build($imageUrl);
-$pngUrl = imagor()->resize(width: 400)->format('png')->build($imageUrl);
+$webpUrl = imagor()->resize(width: 400)->format('webp')->uriFor($imageUrl);
+$avifUrl = imagor()->resize(width: 400)->format('avif')->uriFor($imageUrl);
+$pngUrl = imagor()->resize(width: 400)->format('png')->uriFor($imageUrl);
 ```
 
 ### Visual Effects
@@ -151,7 +151,7 @@ $url = imagor()
     ->brightness(20)         // Increase brightness
     ->contrast(110)          // Enhance contrast (percentage)
     ->saturation(120)        // Boost saturation (percentage)
-    ->build($imageUrl);
+    ->uriFor($imageUrl);
 ```
 
 ### Image Transformations
@@ -162,20 +162,20 @@ $url = imagor()
     ->resize(width: 400, height: 300)
     ->flipHorizontally()
     ->flipVertically() 
-    ->build($imageUrl);
+    ->uriFor($imageUrl);
 
 // Add padding (left, top, right, bottom)
 $url = imagor()
     ->resize(width: 400, height: 300)
     ->padding(10, 10, 10, 10)
-    ->build($imageUrl);
+    ->uriFor($imageUrl);
 
 // Set alignment for cropping
 $url = imagor()
     ->resize(width: 400, height: 300)
     ->hAlign('left')         // 'left', 'right', 'center'
     ->vAlign('top')          // 'top', 'bottom', 'middle'
-    ->build($imageUrl);
+    ->uriFor($imageUrl);
 ```
 
 ### Method Chaining Examples
@@ -190,7 +190,7 @@ $optimizedUrl = imagor()
     ->sharpen(1.0)
     ->brightness(5)
     ->contrast(105)
-    ->build($originalImage);
+    ->uriFor($originalImage);
 
 // Portrait enhancement
 $portraitUrl = imagor()
@@ -201,7 +201,7 @@ $portraitUrl = imagor()
     ->saturation(105)
     ->sharpen(0.8)
     ->quality(90)
-    ->build($portrait);
+    ->uriFor($portrait);
 ```
 
 ## API Reference
@@ -229,7 +229,7 @@ $portraitUrl = imagor()
 | `contrast(int $amount)`                         | Percentage              | Adjust contrast                       |
 | `saturation(int $amount)`                       | Percentage              | Adjust saturation                     |
 | `addFilter(string $name, ...$args)`             | Filter name and args    | Add custom filter                     |
-| `build(string $sourceImage)`                    | Image URL               | Generate final URL                    |
+| `uriFor(string $sourceImage)`                    | Image URL               | Generate final URL                    |
 
 ### Supported Formats
 
@@ -252,7 +252,7 @@ $thumbnail = imagor()
     ->resize(width: 150, height: 150)
     ->quality(60)
     ->format('webp')
-    ->build($image);
+    ->uriFor($image);
 
 // Hero images - balance quality and size
 $hero = imagor()
@@ -260,7 +260,7 @@ $hero = imagor()
     ->fitIn()
     ->quality(85)
     ->format('webp')
-    ->build($image);
+    ->uriFor($image);
 
 // Product images - prioritize quality
 $product = imagor()
@@ -268,7 +268,7 @@ $product = imagor()
     ->smart()
     ->quality(95)
     ->sharpen(0.5)
-    ->build($image);
+    ->uriFor($image);
 ```
 
 ### Laravel Integration
@@ -282,11 +282,11 @@ Create custom Blade directives for common use cases:
 use Illuminate\Support\Facades\Blade;
 
 Blade::directive('imagor', function ($expression) {
-    return "<?php echo imagor()->resize(width: 400)->build($expression); ?>";
+    return "<?php echo imagor()->resize(width: 400)->uriFor($expression); ?>";
 });
 
 Blade::directive('avatar', function ($expression) {
-    return "<?php echo imagor()->resize(width: 150, height: 150)->smart()->build($expression); ?>";
+    return "<?php echo imagor()->resize(width: 150, height: 150)->smart()->uriFor($expression); ?>";
 });
 ```
 
@@ -314,7 +314,7 @@ class User extends Model
             ->smart()
             ->format('webp')
             ->quality(85)
-            ->build($this->avatar);
+            ->uriFor($this->avatar);
     }
 
     public function getAvatarThumbnailAttribute(): string
@@ -327,7 +327,7 @@ class User extends Model
             ->resize(width: 50, height: 50)
             ->smart()
             ->quality(70)
-            ->build($this->avatar);
+            ->uriFor($this->avatar);
     }
 }
 ```
@@ -345,9 +345,9 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'avatar' => [
-                'small' => imagor()->resize(width: 50, height: 50)->build($this->avatar),
-                'medium' => imagor()->resize(width: 150, height: 150)->build($this->avatar),
-                'large' => imagor()->resize(width: 300, height: 300)->build($this->avatar),
+                'small' => imagor()->resize(width: 50, height: 50)->uriFor($this->avatar),
+                'medium' => imagor()->resize(width: 150, height: 150)->uriFor($this->avatar),
+                'large' => imagor()->resize(width: 300, height: 300)->uriFor($this->avatar),
             ],
         ];
     }
@@ -373,7 +373,7 @@ class ResponsiveImage
                 ->smart()
                 ->format('webp')
                 ->quality(85)
-                ->build($imageUrl);
+                ->uriFor($imageUrl);
 
             $srcset[] = "{$url} {$width}w";
         }
@@ -389,7 +389,7 @@ $srcsetString = implode(', ', $srcset);
 ```
 
 ```blade
-<img src="{{ imagor()->resize(width: 800)->build($image) }}"
+<img src="{{ imagor()->resize(width: 800)->uriFor($image) }}"
      srcset="{{ $srcsetString }}"
      sizes="(max-width: 768px) 100vw, 50vw"
      alt="Responsive image">
@@ -409,7 +409,7 @@ $enhancedPortrait = imagor()
     ->saturation(105)     // Subtle saturation boost
     ->sharpen(0.8)        // Gentle sharpening
     ->quality(92)
-    ->build($portrait);
+    ->uriFor($portrait);
 
 // Vintage effect
 $vintageEffect = imagor()
@@ -418,7 +418,7 @@ $vintageEffect = imagor()
     ->contrast(90)        // Lower contrast
     ->brightness(-10)     // Slightly darker
     ->quality(85)
-    ->build($image);
+    ->uriFor($image);
 ```
 
 #### E-commerce Optimization
@@ -434,7 +434,7 @@ $productClean = imagor()
     ->sharpen(1.5)        // Sharp product details
     ->quality(95)         // High quality for products
     ->format('webp')
-    ->build($product);
+    ->uriFor($product);
 ```
 
 ## Testing

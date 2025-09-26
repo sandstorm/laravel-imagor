@@ -30,10 +30,10 @@
             <!-- Basic Resizing -->
             <div class="mb-8">
                 <h3 class="text-lg font-medium mb-3 text-gray-700">Basic Resizing (400x300)</h3>
-                <img src="{{ imagor()->resize(width: 400, height: 300)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                <img src="{{ imagor()->resize(width: 400, height: 300)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                      alt="Resized" class="border rounded shadow-sm">
                 <p class="text-sm text-gray-500 mt-2">
-                    Code: <code class="bg-gray-100 px-1 rounded">imagor()->resize(width: 400, height: 300)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000')</code>
+                    Code: <code class="bg-gray-100 px-1 rounded">imagor()->resize(width: 400, height: 300)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000')</code>
                 </p>
             </div>
 
@@ -43,17 +43,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <h4 class="font-medium mb-2">Low Quality (30%)</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(30)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(30)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Low Quality" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">Medium Quality (70%)</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(70)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(70)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Medium Quality" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">High Quality (95%)</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(95)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 200)->quality(95)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="High Quality" class="border rounded shadow-sm w-full">
                     </div>
                 </div>
@@ -65,22 +65,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                         <h4 class="font-medium mb-2">JPEG</h4>
-                        <img src="{{ imagor()->resize(width: 250)->format('jpeg')->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 250)->format('jpeg')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="JPEG" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">PNG</h4>
-                        <img src="{{ imagor()->resize(width: 250)->format('png')->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 250)->format('png')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="PNG" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">WebP</h4>
-                        <img src="{{ imagor()->resize(width: 250)->format('webp')->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 250)->format('webp')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="WebP" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">AVIF</h4>
-                        <img src="{{ imagor()->resize(width: 250)->format('avif')->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 250)->format('avif')->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="AVIF" class="border rounded shadow-sm w-full">
                     </div>
                 </div>
@@ -92,22 +92,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                         <h4 class="font-medium mb-2">Fit</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->fitIn()->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 200)->fitIn()->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Fit" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">Fill</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 200)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Fill" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">Force</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->stretch()->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 200)->stretch()->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Force" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">Auto</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 200)->smart()->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 200)->smart()->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Auto" class="border rounded shadow-sm w-full">
                     </div>
                 </div>
@@ -119,17 +119,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <h4 class="font-medium mb-2">Blur Effect</h4>
-                        <img src="{{ imagor()->resize(width: 300)->blur(2.0)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300)->blur(2.0)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Blur" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">Sharpen Effect</h4>
-                        <img src="{{ imagor()->resize(width: 300)->sharpen(2.0)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300)->sharpen(2.0)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Sharpen" class="border rounded shadow-sm w-full">
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">High Saturation</h4>
-                        <img src="{{ imagor()->resize(width: 300)->saturation(2.0)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300)->saturation(2.0)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Saturated" class="border rounded shadow-sm w-full">
                     </div>
                 </div>
@@ -141,13 +141,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <h4 class="font-medium mb-2">Portrait Enhancement</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 400)->brightness(10)->contrast(1.1)->saturation(1.05)->sharpen(0.8)->quality(92)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 400)->brightness(10)->contrast(1.1)->saturation(1.05)->sharpen(0.8)->quality(92)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Enhanced Portrait" class="border rounded shadow-sm w-full">
                         <p class="text-xs text-gray-500 mt-1">Enhanced brightness, contrast, saturation, and sharpening</p>
                     </div>
                     <div>
                         <h4 class="font-medium mb-2">Vintage Effect</h4>
-                        <img src="{{ imagor()->resize(width: 300, height: 400)->saturation(0.7)->contrast(0.9)->brightness(-10)->quality(85)->build('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
+                        <img src="{{ imagor()->resize(width: 300, height: 400)->saturation(0.7)->contrast(0.9)->brightness(-10)->quality(85)->uriFor('https://picsum.photos/seed/sandstorm-laravel/3000/3000') }}"
                              alt="Vintage Effect" class="border rounded shadow-sm w-full">
                         <p class="text-xs text-gray-500 mt-1">Reduced saturation, lower contrast, and decreased brightness</p>
                     </div>

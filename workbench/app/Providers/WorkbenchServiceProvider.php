@@ -36,7 +36,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             Route::get('/basic', function () {
                 $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
-                $processedUrl = imagor()->resize(width: 400, height: 300)->build($imageUrl);
+                $processedUrl = imagor()->resize(width: 400, height: 300)->uriFor($imageUrl);
 
                 return response()->json([
                     'original' => $imageUrl,
@@ -57,7 +57,7 @@ class WorkbenchServiceProvider extends ServiceProvider
                     ->brightness(10)
                     ->contrast(1.1)
                     ->saturation(1.05)
-                    ->build($imageUrl);
+                    ->uriFor($imageUrl);
 
                 return response()->json([
                     'original' => $imageUrl,
@@ -79,10 +79,10 @@ class WorkbenchServiceProvider extends ServiceProvider
                 $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
                 $formats = [
-                    'jpeg' => imagor()->resize(width: 250)->format('jpeg')->build($imageUrl),
-                    'png' => imagor()->resize(width: 250)->format('png')->build($imageUrl),
-                    'webp' => imagor()->resize(width: 250)->format('webp')->build($imageUrl),
-                    'avif' => imagor()->resize(width: 250)->format('avif')->build($imageUrl),
+                    'jpeg' => imagor()->resize(width: 250)->format('jpeg')->uriFor($imageUrl),
+                    'png' => imagor()->resize(width: 250)->format('png')->uriFor($imageUrl),
+                    'webp' => imagor()->resize(width: 250)->format('webp')->uriFor($imageUrl),
+                    'avif' => imagor()->resize(width: 250)->format('avif')->uriFor($imageUrl),
                 ];
 
                 return response()->json([
@@ -97,10 +97,10 @@ class WorkbenchServiceProvider extends ServiceProvider
                 $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
                 $resizeTypes = [
-                    'fit' => imagor()->resize(width: 300, height: 200)->fitIn()->build($imageUrl),
-                    'fill' => imagor()->resize(width: 300, height: 200)->build($imageUrl),
-                    'force' => imagor()->resize(width: 300, height: 200)->stretch()->build($imageUrl),
-                    'auto' => imagor()->resize(width: 300, height: 200)->smart()->build($imageUrl),
+                    'fit' => imagor()->resize(width: 300, height: 200)->fitIn()->uriFor($imageUrl),
+                    'fill' => imagor()->resize(width: 300, height: 200)->uriFor($imageUrl),
+                    'force' => imagor()->resize(width: 300, height: 200)->stretch()->uriFor($imageUrl),
+                    'auto' => imagor()->resize(width: 300, height: 200)->smart()->uriFor($imageUrl),
                 ];
 
                 return response()->json([
@@ -115,9 +115,9 @@ class WorkbenchServiceProvider extends ServiceProvider
                 $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
                 $qualities = [
-                    'low' => imagor()->resize(width: 300, height: 200)->quality(30)->build($imageUrl),
-                    'medium' => imagor()->resize(width: 300, height: 200)->quality(70)->build($imageUrl),
-                    'high' => imagor()->resize(width: 300, height: 200)->quality(95)->build($imageUrl),
+                    'low' => imagor()->resize(width: 300, height: 200)->quality(30)->uriFor($imageUrl),
+                    'medium' => imagor()->resize(width: 300, height: 200)->quality(70)->uriFor($imageUrl),
+                    'high' => imagor()->resize(width: 300, height: 200)->quality(95)->uriFor($imageUrl),
                 ];
 
                 return response()->json([
@@ -132,9 +132,9 @@ class WorkbenchServiceProvider extends ServiceProvider
                 $imageUrl = 'https://picsum.photos/seed/sandstorm-laravel/3000/3000';
 
                 $effects = [
-                    'blur' => imagor()->resize(width: 300)->blur(2.0)->build($imageUrl),
-                    'sharpen' => imagor()->resize(width: 300)->sharpen(2.0)->build($imageUrl),
-                    'saturated' => imagor()->resize(width: 300)->saturation(2.0)->build($imageUrl),
+                    'blur' => imagor()->resize(width: 300)->blur(2.0)->uriFor($imageUrl),
+                    'sharpen' => imagor()->resize(width: 300)->sharpen(2.0)->uriFor($imageUrl),
+                    'saturated' => imagor()->resize(width: 300)->saturation(2.0)->uriFor($imageUrl),
                 ];
 
                 return response()->json([
@@ -156,14 +156,14 @@ class WorkbenchServiceProvider extends ServiceProvider
                         ->saturation(1.05)
                         ->sharpen(0.8)
                         ->quality(92)
-                        ->build($imageUrl),
+                        ->uriFor($imageUrl),
                     'vintage_effect' => imagor()
                         ->resize(width: 300, height: 400)
                         ->saturation(0.7)
                         ->contrast(0.9)
                         ->brightness(-10)
                         ->quality(85)
-                        ->build($imageUrl),
+                        ->uriFor($imageUrl),
                 ];
 
                 return response()->json([

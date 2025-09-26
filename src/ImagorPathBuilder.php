@@ -231,7 +231,7 @@ class ImagorPathBuilder
         return $this->addFilter('contrast', $amount);
     }
 
-    public function build(string $sourceImage): string
+    public function uriFor(string $sourceImage): string
     {
         $sourceImage = $this->resolveTargetPath($sourceImage);
         $decodedPathSegments = [];
