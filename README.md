@@ -43,6 +43,33 @@ return [
 ];
 ```
 
+## Setting up Imagor with Docker
+
+This part of the guide assumes you deploy your Laravel application and imagor using Docker.
+
+We recommend that you use the Docker image at `./imagor_docker` for Imagor deployment.
+
+Mount the `./storage` folder of your Laravel application to the same folder in the Imagor container;
+so if the storage folder is located at `/app/storage`, you should mount it to `/app/storage` in the Imagor container
+as well.
+
+Then, you can use `FILE_LOADER_BASE_DIR='/app'` to load images from the mounted storage folder.
+
+```
+'path_map' => [
+    // the key is the original (Laravel) path prefix, the value is the corresponding Imagor path prefix AFTER the FILE_LOADER_BASE_DIR.
+    // so /storage on the right side resolves to /app/storage on the file system of the Imagor container
+    storage_path() => '/storage',
+]
+```
+
+## Testing Imagor
+
+you can call the URL [/__imagor-configtest](http://127.0.0.1:8000/__imagor-configtest) to check if Imagor is configured
+correctly. This example copies a pre-defined image to the storage folder and then loads it through Imagor to check if
+everything is wired correctly.
+
+
 ## Configuration
 
 You can configure the package by updating the values in your `.env` file:

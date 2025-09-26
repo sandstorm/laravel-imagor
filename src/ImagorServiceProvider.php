@@ -11,7 +11,8 @@ class ImagorServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('laravel-imagor')
-            ->hasConfigFile('imagor');
+            ->hasConfigFile('imagor')
+            ->hasRoute('web');
     }
 
     public function register()
@@ -25,6 +26,7 @@ class ImagorServiceProvider extends PackageServiceProvider
                 signerType: config('imagor.signer_type', 'sha256'),
                 secret: config('imagor.secret'),
                 signerTruncate: config('imagor.signer_truncate'),
+                pathMap: config('imagor.path_map'),
             );
         });
 

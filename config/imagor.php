@@ -9,4 +9,9 @@ return [
     'signer_type' => env('IMAGOR_SIGNER_TYPE', 'sha256'),
     // Truncate signed token to this length; null to keep full length
     'signer_truncate' => env('IMAGOR_SIGNER_TRUNCATE'),
+
+    'path_map' => [
+        // the key is the original (Laravel) path prefix, the value is the corresponding Imagor path prefix
+        storage_path() => '/storage',
+    ]
 ];

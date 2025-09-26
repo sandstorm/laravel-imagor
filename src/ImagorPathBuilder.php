@@ -24,10 +24,11 @@ class ImagorPathBuilder
      * @internal use ImagorFactory::new() instead.
      */
     public function __construct(
-        private readonly string   $baseUrl,
-        private readonly string|null   $signerType,
-        private readonly string|null   $secret,
-        private readonly int|null $signerTruncate,
+        private readonly string      $baseUrl,
+        private readonly string|null $signerType,
+        private readonly string|null $secret,
+        private readonly int|null    $signerTruncate,
+        private readonly array       $pathMap = [],
     )
     {
     }
@@ -232,6 +233,7 @@ class ImagorPathBuilder
 
     public function build(string $sourceImage): string
     {
+        $sourceImage = $this->resolveTargetPath($sourceImage);
         $decodedPathSegments = [];
 
         if ($this->trim) {
@@ -316,5 +318,16 @@ class ImagorPathBuilder
                 return substr($hash, 0, $this->signerTruncate);
             }
         }
+    }
+
+    private function resolveTargetPath(string $sourceImage)
+    {
+        foreach ($this->pathMap as $source => $target) {
+            if (str_starts_with($sourceImage, $source)) {
+                return $target . substr($sourceImage, strlen($source));
+            }
+        }
+
+        return $sourceImage;
     }
 }

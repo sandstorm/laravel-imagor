@@ -16,7 +16,7 @@ services:
       VIPS_MOZJPEG: 1
     volumes:
       - imagor_cache:/mnt/imagor_cache
-      # TODO: image itself: - :/app
+      - ./vendor/orchestra/testbench-core/laravel/storage:/app/storage
     ports:
       - 8001:8001
 
