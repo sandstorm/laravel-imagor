@@ -7,6 +7,36 @@
 
 A comprehensive Laravel package for [Imagor](https://github.com/cshum/imagor) integration. Generate optimized, signed image URLs with fluent API including resizing, quality control, visual effects, and advanced processing options. Originally forked from https://github.com/imsus/laravel-imgproxy, which deserves most credit :) 
 
+<!-- TOC -->
+* [Laravel integration for Imagor](#laravel-integration-for-imagor)
+  * [Features](#features)
+  * [Installation](#installation)
+* [Basic Usage](#basic-usage)
+  * [Resizing & Cropping](#resizing--cropping)
+  * [Quality & Format Control](#quality--format-control)
+  * [Visual Effects](#visual-effects)
+  * [Image Transformations](#image-transformations)
+* [Laravel Integration](#laravel-integration)
+  * [Livewire: Display temporary uploaded files](#livewire-display-temporary-uploaded-files)
+  * [Display images from the public storage](#display-images-from-the-public-storage)
+  * [Upload images in Filament Forms](#upload-images-in-filament-forms)
+  * [Blade Directives](#blade-directives)
+* [API Reference](#api-reference)
+  * [Available Methods](#available-methods)
+  * [Supported Formats](#supported-formats)
+* [Image Processing Recipes](#image-processing-recipes)
+  * [Photo Enhancement](#photo-enhancement)
+  * [E-commerce Optimization](#e-commerce-optimization)
+* [Development Setup](#development-setup)
+  * [Unit & Integration Tests](#unit--integration-tests)
+  * [Interactive Testing with Workbench](#interactive-testing-with-workbench)
+  * [Troubleshooting](#troubleshooting)
+    * [Common Issues](#common-issues)
+  * [Changelog](#changelog)
+  * [Credits](#credits)
+  * [License](#license)
+<!-- TOC -->
+
 ## Features
 
 - 🚀 **Fluent API** - Clean, chainable method syntax
@@ -32,27 +62,73 @@ You can publish the config file with:
 php artisan vendor:publish --tag="imagor-config"
 ```
 
-This is the contents of the published config file:
+To set up Imagor via `docker-compose.yaml`, use the following snippet:
 
-```php
-return [
-    'base_url' => env('IMAGOR_BASE_URL', 'http://localhost:8000'),
-    'signer_type' => env('IMAGOR_SIGNER_TYPE', 'sha256'),
-    'secret' => env('IMAGOR_SECRET'),
-    'signer_truncate' => env('IMAGOR_SIGNER_TRUNCATE'),
-];
+```yaml
+services:
+  laravel:
+    # ...
+    # we assume the laravel application lives in "/app" in the Docker container
+    volumes:
+      - laravel-storage:/app/storage
+    environment:
+      IMAGOR_BASE_URL: http://imagor:8091
+      IMAGOR_SECRET: UNSAFE_DEV_SECRET
+      IMAGOR_SIGNER_TYPE: sha256
+      IMAGOR_SIGNER_TRUNCATE: 40
+
+  # use the mozjpeg version from docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg
+  # See https://gitlab.sandstorm.de/docker-infrastructure/imagor/container_registry for the currently built versions.
+  #
+  # to get smaller JPEG files - alternatively you can also use the official shumc/imagor image from docker hub
+  imagor:
+    image: docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg
+    ports:
+      - ${IMAGOR_PORT:-8091:8091}
+    environment:
+      # if things do not work, enable debugging:
+      # DEBUG: 1
+      PORT: 8091
+
+      IMAGOR_SECRET: UNSAFE_DEV_SECRET
+      IMAGOR_SIGNER_TYPE: sha256
+      IMAGOR_SIGNER_TRUNCATE: 40
+
+      IMAGOR_CACHE_HEADER_TTL: 8760h
+      IMAGOR_PROCESS_CONCURRENCY: 25
+      IMAGOR_PROCESS_QUEUE_SIZE: 200
+      SERVER_ADDRESS: imagor
+      SERVER_CORS: true
+
+      # crucial if files contain special characters, e.g. for Laravel temporary uploads
+      # -> disables mangling of filenames during loading
+      FILE_SAFE_CHARS: '--'
+      FILE_LOADER_BASE_DIR: '/app'
+
+      FILE_RESULT_STORAGE_BASE_DIR: '/mnt/imagor_cache/results'
+      FILE_STORAGE_BASE_DIR: '/mnt/imagor_cache/input'
+      VIPS_MAX_ANIMATION_FRAMES: 1
+      VIPS_MAX_FILTER_OPS: 20
+      VIPS_MAX_WIDTH: 10000
+      VIPS_MAX_HEIGHT: 10000
+      VIPS_MAX_RESOLUTION: 100000000
+
+      # smaller images (optional)
+      VIPS_MOZJPEG: 1
+    volumes:
+      - laravel-storage:/app/storage
+
 ```
 
-## Setting up Imagor with Docker
+Finally, can call the URL [/__imagor-configtest](http://127.0.0.1:8080/__imagor-configtest) to check if Imagor is configured
+correctly. This example copies some pre-defined images to the storage folder and then loads it through Imagor to check if
+everything is wired correctly.
 
-This part of the guide assumes you deploy your Laravel application and imagor using Docker.
 
-You can use the [official Imagor Docker image](https://hub.docker.com/r/cshum/imagor) to run Imagor, but this
-does NOT contain mozjpeg; so that means the JPEGs could be a bit smaller file-size wise.
+<summary>
+Setup Details of the Docker setup:
 
-**Our recommendation is to use `docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg`, which contains mozjpeg and is thus outputting smaller JPEG files.**
-
-See https://gitlab.sandstorm.de/docker-infrastructure/imagor/container_registry for the currently built versions.
+<details>
 
 > if you want to build the image yourself, see see the [./laravel-imagor](./laravel-imagor) folder which contains the sources
 > of this docker image.
@@ -63,6 +139,8 @@ as well.
 
 Then, you can use `FILE_LOADER_BASE_DIR='/app'` to load images from the mounted storage folder.
 
+Adjust the path mapping if needed via the `path_map` config option:
+
 ```
 'path_map' => [
     // the key is the original (Laravel) path prefix, the value is the corresponding Imagor path prefix AFTER the FILE_LOADER_BASE_DIR.
@@ -71,73 +149,65 @@ Then, you can use `FILE_LOADER_BASE_DIR='/app'` to load images from the mounted 
 ]
 ```
 
-## Testing Imagor
 
-you can call the URL [/__imagor-configtest](http://127.0.0.1:8000/__imagor-configtest) to check if Imagor is configured
-correctly. This example copies a pre-defined image to the storage folder and then loads it through Imagor to check if
-everything is wired correctly.
+</details>
+</summary>
 
 
-## Configuration
-
-You can configure the package by updating the values in your `.env` file:
-
-```dotenv
-IMAGOR_BASE_URL=http://localhost:8000
-IMAGOR_SECRET=your_secret_key_here
-IMAGOR_SIGNER_TYPE=sha256
-IMAGOR_SIGNER_TRUNCATE=null
-```
-
-> [!NOTE]
-> The `secret` is required only if you want to generate signed URLs. If you don't want to generate signed URLs, you can leave it empty.
-
-> [!CAUTION]
-> Keep your secret key secure and use a strong, randomly generated value in production.
-
-### Configuration Options
-
-| Option             | Description                    | Default               | Options                           |
-| ------------------ | ------------------------------ | --------------------- | --------------------------------- |
-| `base_url`         | Imagor server URL              | `http://localhost:8000` | Any valid URL                     |
-| `secret`           | Signing secret key             | `null`                | Any string                        |
-| `signer_type`      | HMAC algorithm                 | `sha256`              | `sha256`, `sha1`, `md5`           |
-| `signer_truncate`  | Truncate signature length      | `null`                | Integer or null                   |
-
-## Usage
-
-### Basic Usage
+# Basic Usage
 
 ```php
 // Generate URL using helper function
-$url = imagor()->resize(width: 400, height: 300)->uriFor('https://example.com/image.jpg');
-
-// Or using the fluent API
 $url = imagor()
     ->resize(width: 400, height: 300)
     ->uriFor('https://example.com/image.jpg');
 ```
 
-### Resizing & Cropping
+NOTE: the image URL to be processed is passed at the END of the chain, to be able to use the same instance of the
+`Imagor` class for multiple image processing operations:
+
+```php
+$resizeOp = imagor()
+    ->resize(width: 400, height: 300);
+    
+
+$url1 = $resizeOp->uriFor('https://example.com/image.jpg');
+$url2 = $resizeOp->uriFor('https://example.com/foo.jpg');
+```
+
+## Resizing & Cropping
 
 ```php
 // Basic resizing
-$url = imagor()->resize(width: 400, height: 300)->uriFor($imageUrl);
+$url = imagor()
+    ->resize(width: 400, height: 300)
+    ->uriFor($imageUrl);
 
 // Fit image within dimensions (preserves aspect ratio)
-$url = imagor()->resize(width: 400, height: 300)->fitIn()->uriFor($imageUrl);
+$url = imagor()
+    ->resize(width: 400, height: 300)
+    ->fitIn()
+    ->uriFor($imageUrl);
 
 // Force stretch to exact dimensions (does NOT preserve aspect ratio)
-$url = imagor()->resize(width: 400, height: 300)->stretch()->uriFor($imageUrl);
+$url = imagor()
+    ->resize(width: 400, height: 300)
+    ->stretch()
+    ->uriFor($imageUrl);
 
 // Smart cropping with focal point detection
-$url = imagor()->resize(width: 400, height: 300)->smart()->uriFor($imageUrl);
+$url = imagor()
+    ->resize(width: 400, height: 300)
+    ->smart()
+    ->uriFor($imageUrl);
 
 // Manual cropping (left, top, right, bottom)
-$url = imagor()->crop(10, 10, 300, 200)->uriFor($imageUrl);
+$url = imagor()
+    ->crop(10, 10, 300, 200)
+    ->uriFor($imageUrl);
 ```
 
-### Quality & Format Control
+## Quality & Format Control
 
 ```php
 // Set JPEG quality
@@ -149,7 +219,7 @@ $avifUrl = imagor()->resize(width: 400)->format('avif')->uriFor($imageUrl);
 $pngUrl = imagor()->resize(width: 400)->format('png')->uriFor($imageUrl);
 ```
 
-### Visual Effects
+## Visual Effects
 
 ```php
 $url = imagor()
@@ -162,7 +232,7 @@ $url = imagor()
     ->uriFor($imageUrl);
 ```
 
-### Image Transformations
+## Image Transformations
 
 ```php
 // Flip images
@@ -186,35 +256,97 @@ $url = imagor()
     ->uriFor($imageUrl);
 ```
 
-### Method Chaining Examples
+# Laravel Integration
 
-```php
-// Complete image optimization pipeline
-$optimizedUrl = imagor()
-    ->resize(width: 800, height: 600)
-    ->fitIn()
-    ->quality(85)
-    ->format('webp')
-    ->sharpen(1.0)
-    ->brightness(5)
-    ->contrast(105)
-    ->uriFor($originalImage);
+## Livewire: Display temporary uploaded files
 
-// Portrait enhancement
-$portraitUrl = imagor()
-    ->resize(width: 400, height: 600)
-    ->smart()
-    ->brightness(10)
-    ->contrast(110)
-    ->saturation(105)
-    ->sharpen(0.8)
-    ->quality(90)
-    ->uriFor($portrait);
+before:
+
+```blade
+<img width="300" src="{{ $mediaFile->temporaryUrl() }}" />
 ```
 
-## API Reference
+after:
 
-### Available Methods
+```blade
+<img width="300" src="{{ imagor()->resize(300)->uriFor($mediaFile->getPathname()) }}" />
+```
+
+## Display images from the public storage
+
+before: 
+
+```blade
+<img src="{{ asset('storage/' . $post->media_files[0]) }}" />
+```
+
+after:
+
+```blade
+<img src="{{ imagor()->resize(300)->uriFor(Storage::disk('public')->path($post->media_files[0])) }}">
+```
+
+TODO: see if we can make this work a bit simpler :)
+
+## Upload images in Filament Forms
+
+before:
+
+```php
+FileUpload::make('media_files')
+    ->acceptedFileTypes(['image/*'])
+    ->rules(['image', 'max:10240']) // max 10MB per file
+    ->disk('public')
+    ->visibility('public')
+```
+
+after:
+
+```php
+use Sandstorm\LaravelImagor\Filament\Components\ImagorFileUpload;
+
+ImagorFileUpload::make('media_files')
+    ->acceptedFileTypes(['image/*'])
+    ->rules(['image', 'max:10240']) // max 10MB per file
+    
+    // not required anymore, imagor also works with private files
+    ->disk('public')
+    // not required anymore, imagor also works with private files
+    ->visibility('public')
+    
+    // specify which size is needed
+    ->imageProcessor(imagor()->resize(100)),
+    
+    // same logic, different syntax (without global function)
+    ->imageProcessor(fn(ImagorPathBuilder $imagor) => $imagor->resize(100)),
+```
+
+## Blade Directives
+
+Create custom Blade directives for common use cases:
+
+```php
+// In AppServiceProvider::boot()
+use Illuminate\Support\Facades\Blade;
+
+Blade::directive('imagorWide', function ($expression) {
+    return "<?php echo imagor()->resize(width: 400)->uriFor($expression); ?>";
+});
+
+Blade::directive('avatar', function ($expression) {
+    return "<?php echo imagor()->resize(width: 150, height: 150)->smart()->uriFor($expression); ?>";
+});
+```
+
+```blade
+{{-- Usage in Blade templates --}}
+<img src="@imagorWide($product->image)" alt="Product">
+<img src="@avatar($user->avatar)" alt="User Avatar">
+```
+
+# API Reference
+
+## Available Methods
 
 | Method                                          | Parameters              | Description                           |
 | ----------------------------------------------- | ----------------------- | ------------------------------------- |
@@ -239,7 +371,7 @@ $portraitUrl = imagor()
 | `addFilter(string $name, ...$args)`             | Filter name and args    | Add custom filter                     |
 | `uriFor(string $sourceImage)`                    | Image URL               | Generate final URL                    |
 
-### Supported Formats
+## Supported Formats
 
 - `jpeg` - JPEG format
 - `png` - PNG format
@@ -250,162 +382,10 @@ $portraitUrl = imagor()
 - `tiff` - TIFF format
 - `jp2` - JPEG 2000 format
 
-## Advanced Usage & Patterns
 
-### Performance Optimization
+# Image Processing Recipes
 
-```php
-// Thumbnails - prioritize small file size
-$thumbnail = imagor()
-    ->resize(width: 150, height: 150)
-    ->quality(60)
-    ->format('webp')
-    ->uriFor($image);
-
-// Hero images - balance quality and size
-$hero = imagor()
-    ->resize(width: 1920, height: 1080)
-    ->fitIn()
-    ->quality(85)
-    ->format('webp')
-    ->uriFor($image);
-
-// Product images - prioritize quality
-$product = imagor()
-    ->resize(width: 800, height: 600)
-    ->smart()
-    ->quality(95)
-    ->sharpen(0.5)
-    ->uriFor($image);
-```
-
-### Laravel Integration
-
-#### Blade Directives
-
-Create custom Blade directives for common use cases:
-
-```php
-// In AppServiceProvider::boot()
-use Illuminate\Support\Facades\Blade;
-
-Blade::directive('imagor', function ($expression) {
-    return "<?php echo imagor()->resize(width: 400)->uriFor($expression); ?>";
-});
-
-Blade::directive('avatar', function ($expression) {
-    return "<?php echo imagor()->resize(width: 150, height: 150)->smart()->uriFor($expression); ?>";
-});
-```
-
-```blade
-{{-- Usage in Blade templates --}}
-<img src="@imagor($product->image)" alt="Product">
-<img src="@avatar($user->avatar)" alt="User Avatar">
-```
-
-#### Eloquent Accessors
-
-Add image processing to Eloquent models:
-
-```php
-class User extends Model
-{
-    public function getAvatarUrlAttribute(): string
-    {
-        if (!$this->avatar) {
-            return '/default-avatar.png';
-        }
-
-        return imagor()
-            ->resize(width: 150, height: 150)
-            ->smart()
-            ->format('webp')
-            ->quality(85)
-            ->uriFor($this->avatar);
-    }
-
-    public function getAvatarThumbnailAttribute(): string
-    {
-        if (!$this->avatar) {
-            return '/default-avatar.png';
-        }
-
-        return imagor()
-            ->resize(width: 50, height: 50)
-            ->smart()
-            ->quality(70)
-            ->uriFor($this->avatar);
-    }
-}
-```
-
-#### API Resources
-
-Use in API resources for consistent image URLs:
-
-```php
-class UserResource extends JsonResource
-{
-    public function toArray($request)
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'avatar' => [
-                'small' => imagor()->resize(width: 50, height: 50)->uriFor($this->avatar),
-                'medium' => imagor()->resize(width: 150, height: 150)->uriFor($this->avatar),
-                'large' => imagor()->resize(width: 300, height: 300)->uriFor($this->avatar),
-            ],
-        ];
-    }
-}
-```
-
-### Common Patterns
-
-#### Responsive Images
-
-Generate multiple image sizes for responsive images:
-
-```php
-class ResponsiveImage
-{
-    public static function generateSrcset(string $imageUrl, array $sizes): array
-    {
-        $srcset = [];
-
-        foreach ($sizes as $width) {
-            $url = imagor()
-                ->resize(width: $width, height: intval($width * 0.75)) // 4:3 aspect ratio
-                ->smart()
-                ->format('webp')
-                ->quality(85)
-                ->uriFor($imageUrl);
-
-            $srcset[] = "{$url} {$width}w";
-        }
-
-        return $srcset;
-    }
-}
-
-// Usage
-$sizes = [400, 800, 1200, 1600];
-$srcset = ResponsiveImage::generateSrcset($image, $sizes);
-$srcsetString = implode(', ', $srcset);
-```
-
-```blade
-<img src="{{ imagor()->resize(width: 800)->uriFor($image) }}"
-     srcset="{{ $srcsetString }}"
-     sizes="(max-width: 768px) 100vw, 50vw"
-     alt="Responsive image">
-```
-
-### Image Processing Recipes
-
-#### Photo Enhancement
+## Photo Enhancement
 
 ```php
 // Portrait enhancement
@@ -429,7 +409,7 @@ $vintageEffect = imagor()
     ->uriFor($image);
 ```
 
-#### E-commerce Optimization
+## E-commerce Optimization
 
 ```php
 // Clean product photos
@@ -445,9 +425,9 @@ $productClean = imagor()
     ->uriFor($product);
 ```
 
-## Testing
+# Development Setup
 
-### Unit & Integration Tests
+## Unit & Integration Tests
 
 ```bash
 # Run all tests
@@ -457,7 +437,7 @@ composer test
 composer test-coverage
 ```
 
-### Interactive Testing with Workbench
+## Interactive Testing with Workbench
 
 The package includes a comprehensive workbench environment for interactive testing:
 
@@ -470,31 +450,7 @@ composer build
 php vendor/bin/testbench serve
 ```
 
-Once the server is running (typically at `http://localhost:8000`), you can access:
-
-#### API Test Endpoints
-
-- **Test Overview**: `http://localhost:8000/imgproxy-test/` - JSON overview of all available tests
-- **Basic Test**: `http://localhost:8000/imgproxy-test/basic` - Basic URL generation testing
-- **Effects Test**: `http://localhost:8000/imgproxy-test/effects` - Quality and visual effects testing
-- **Formats Test**: `http://localhost:8000/imgproxy-test/formats` - Format conversion testing
-- **Resize Test**: `http://localhost:8000/imgproxy-test/resize` - Different resize types comparison
-- **Quality Test**: `http://localhost:8000/imgproxy-test/quality` - Quality comparison testing
-- **Visual Effects**: `http://localhost:8000/imgproxy-test/visual-effects` - Visual effects testing
-- **Complex Processing**: `http://localhost:8000/imgproxy-test/complex` - Complex processing testing
-
-#### Visual Testing
-
-- **Visual Test Suite**: `http://localhost:8000/imgproxy-visual-test` - Complete browser-based visual testing
-
-The visual test page includes:
-- **Real Image Processing** - See actual Imagor results with sample images
-- **Quality Comparison** - Side-by-side quality levels (30%, 70%, 95%)
-- **Format Comparison** - Visual differences between JPEG, PNG, WebP, AVIF
-- **Resize Types Demo** - Visual behavior of fit, fill, force, smart modes
-- **Effects Showcase** - Blur, sharpen, saturation, brightness effects
-- **Complex Processing** - Portrait enhancement and vintage effects
-
+Now access the **Visual Test Suite** at http://localhost:8000/imgproxy-visual-test
 
 ## Troubleshooting
 
@@ -525,14 +481,6 @@ http://localhost:8000/unsafe/400x300/...
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
 
 ## Credits
 
