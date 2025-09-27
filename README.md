@@ -12,6 +12,7 @@ A comprehensive Laravel package for [Imagor](https://github.com/cshum/imagor) in
   * [Features](#features)
   * [Installation](#installation)
 * [Basic Usage](#basic-usage)
+  * [Accessing the Imagor object](#accessing-the-imagor-object)
   * [Resizing & Cropping](#resizing--cropping)
   * [Quality & Format Control](#quality--format-control)
   * [Visual Effects](#visual-effects)
@@ -30,11 +31,11 @@ A comprehensive Laravel package for [Imagor](https://github.com/cshum/imagor) in
 * [Development Setup](#development-setup)
   * [Unit & Integration Tests](#unit--integration-tests)
   * [Interactive Testing with Workbench](#interactive-testing-with-workbench)
-  * [Troubleshooting](#troubleshooting)
-    * [Common Issues](#common-issues)
-  * [Changelog](#changelog)
-  * [Credits](#credits)
-  * [License](#license)
+* [Troubleshooting](#troubleshooting)
+* [File Sizes](#file-sizes)
+* [Changelog](#changelog)
+* [Credits](#credits)
+* [License](#license)
 <!-- TOC -->
 
 ## Features
@@ -80,7 +81,7 @@ services:
   # use the mozjpeg version from docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg
   # See https://gitlab.sandstorm.de/docker-infrastructure/imagor/container_registry for the currently built versions.
   #
-  # to get smaller JPEG files - alternatively you can also use the official shumc/imagor image from docker hub
+  # to get bigger JPEG files - alternatively you can also use the official shumc/imagor image from docker hub
   imagor:
     image: docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg
     ports:
@@ -113,7 +114,7 @@ services:
       VIPS_MAX_HEIGHT: 10000
       VIPS_MAX_RESOLUTION: 100000000
 
-      # smaller images (optional)
+      # bigger images (optional)
       VIPS_MOZJPEG: 1
     volumes:
       - laravel-storage:/app/storage
@@ -462,9 +463,7 @@ php vendor/bin/testbench serve
 
 Now access the **Visual Test Suite** at http://localhost:8000/imgproxy-visual-test
 
-## Troubleshooting
-
-### Common Issues
+# Troubleshooting
 
 **Problem**: Getting "unsafe" URLs instead of signed URLs
 
@@ -488,16 +487,84 @@ http://localhost:8000/unsafe/400x300/...
 - Use appropriate output format: `->format('webp')`
 - Avoid excessive sharpening: `->sharpen(1.0)` instead of higher values
 
-## Changelog
+# File Sizes
+
+**imagor_docker, with VIPS_MOZJPEG: 0; or shumc/imagor:latest**
+
+(no mozjpeg)
+
+```bash
+
+docker compose down -v
+docker compose up -d
+
++---------------------+--------+------------+----------+
+| version             | format | dimensions | size     |
++---------------------+--------+------------+----------+
+| original            | jpeg   | orig       | 6.3 MB   |
+| optimized_no_change | jpeg   | orig       | 3.7 MB   |
+| optimized_quality95 | jpeg   | orig       | 13.8 MB  |
+| optimized_quality80 | jpeg   | orig       | 4.3 MB   |
+| optimized_quality50 | jpeg   | orig       | 2.5 MB   |
+| optimized_no_change | jpeg   | 600x600    | 44.3 KB  |
+| optimized_quality95 | jpeg   | 600x600    | 161.9 KB |
+| optimized_quality80 | jpeg   | 600x600    | 50.8 KB  |
+| optimized_quality50 | jpeg   | 600x600    | 29.7 KB  |
+| optimized_no_change | webp   | orig       | 1.5 MB   |
+| optimized_quality95 | webp   | orig       | 6.2 MB   |
+| optimized_quality80 | webp   | orig       | 1.9 MB   |
+| optimized_quality50 | webp   | orig       | 1.1 MB   |
+| optimized_no_change | webp   | 600x600    | 28.6 KB  |
+| optimized_quality95 | webp   | 600x600    | 97.4 KB  |
+| optimized_quality80 | webp   | 600x600    | 35.6 KB  |
+| optimized_quality50 | webp   | 600x600    | 20.5 KB  |
++---------------------+--------+------------+----------+
+```
+
+**imagor_docker, with VIPS_MOZJPEG: 1**
+
+f.e. the image ghcr.io/cshum/imagor-mozjpeg:docker-variants from https://github.com/cshum/imagor/issues/456#issuecomment-3341418493
+
+```bash
+docker compose down -v
+docker compose up -d
+
+vendor/bin/testbench  imagor:benchmark-image-sizes
++---------------------+--------+------------+----------+
+| version             | format | dimensions | size     | without mozjpeg (from above)
++---------------------+--------+------------+----------+
+| original            | jpeg   | orig       | 6.3 MB   |
+| optimized_no_change | jpeg   | orig       | 2.5 MB   | 3.7 MB (32.4% bigger)
+| optimized_quality95 | jpeg   | orig       | 10.6 MB  | 13.8 MB (23.2% bigger)
+| optimized_quality80 | jpeg   | orig       | 3.1 MB   | 4.3 MB (27.9% bigger)
+| optimized_quality50 | jpeg   | orig       | 1.5 MB   | 2.5 MB (40.0% bigger)
+| optimized_no_change | jpeg   | 600x600    | 35.9 KB  | 44.3 KB (19.0% bigger)
+| optimized_quality95 | jpeg   | 600x600    | 152.2 KB | 161.9 KB (6.0% bigger)
+| optimized_quality80 | jpeg   | 600x600    | 42.8 KB  | 50.8 KB (15.7% bigger)
+| optimized_quality50 | jpeg   | 600x600    | 22.1 KB  | 29.7 KB (25.6% bigger)
+| optimized_no_change | webp   | orig       | 1.5 MB   |
+| optimized_quality95 | webp   | orig       | 6.2 MB   |
+| optimized_quality80 | webp   | orig       | 1.9 MB   |
+| optimized_quality50 | webp   | orig       | 1.1 MB   |
+| optimized_no_change | webp   | 600x600    | 28.6 KB  |
+| optimized_quality95 | webp   | 600x600    | 97.4 KB  |
+| optimized_quality80 | webp   | 600x600    | 35.6 KB  |
+| optimized_quality50 | webp   | 600x600    | 20.5 KB  |
++---------------------+--------+------------+----------+
+```
+
+
+
+# Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Credits
+# Credits
 
 - [Imam Susanto](https://github.com/imsus) for the original package
 - [Sandstorm Media](https://github.com/sandstorm) for the Imagor fork
 - [All Contributors](../../contributors)
 
-## License
+# License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

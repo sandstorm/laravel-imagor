@@ -43,8 +43,9 @@ class Imagor
      */
     public function trim(): self
     {
-        $this->trim = true;
-        return $this;
+        $copy = clone $this;
+        $copy->trim = true;
+        return $copy;
     }
 
     /**
@@ -59,8 +60,9 @@ class Imagor
      */
     public function crop(int $a, int $b, int $c, int $d): self
     {
-        $this->crop = sprintf('%dx%d:%dx%d', $a, $b, $c, $d);
-        return $this;
+        $copy = clone $this;
+        $copy->crop = sprintf('%dx%d:%dx%d', $a, $b, $c, $d);
+        return $copy;
     }
 
     /**
@@ -71,8 +73,9 @@ class Imagor
      */
     public function fitIn(): self
     {
-        $this->fitIn = true;
-        return $this;
+        $copy = clone $this;
+        $copy->fitIn = true;
+        return $copy;
     }
 
     /**
@@ -82,8 +85,9 @@ class Imagor
      */
     public function stretch(): self
     {
-        $this->stretch = true;
-        return $this;
+        $copy = clone $this;
+        $copy->stretch = true;
+        return $copy;
     }
 
     /**
@@ -95,9 +99,10 @@ class Imagor
      */
     public function resize(int $width = 0, int $height = 0): self
     {
-        $this->resizeWidth = $width;
-        $this->resizeHeight = $height;
-        return $this;
+        $copy = clone $this;
+        $copy->resizeWidth = $width;
+        $copy->resizeHeight = $height;
+        return $copy;
     }
 
     public function getResizeWidth(): int
@@ -112,14 +117,16 @@ class Imagor
 
     public function flipHorizontally(): self
     {
-        $this->flipHorizontally = !$this->flipHorizontally;
-        return $this;
+        $copy = clone $this;
+        $copy->flipHorizontally = !$this->flipHorizontally;
+        return $copy;
     }
 
     public function flipVertically(): self
     {
-        $this->flipVertically = !$this->flipVertically;
-        return $this;
+        $copy = clone $this;
+        $copy->flipVertically = !$this->flipVertically;
+        return $copy;
     }
 
     /**
@@ -133,8 +140,9 @@ class Imagor
      */
     public function padding(int $left, int $top, int $right, int $bottom): self
     {
-        $this->padding = sprintf('%dx%d:%dx%d', $left, $top, $right, $bottom);
-        return $this;
+        $copy = clone $this;
+        $copy->padding = sprintf('%dx%d:%dx%d', $left, $top, $right, $bottom);
+        return $copy;
     }
 
     /**
@@ -144,11 +152,12 @@ class Imagor
      */
     public function hAlign(string $hAlign): self
     {
+        $copy = clone $this;
         if (!in_array($hAlign, ['left', 'right', 'center'])) {
             throw new RuntimeException('Unsupported hAlign: ' . $hAlign);
         }
-        $this->hAlign = $hAlign;
-        return $this;
+        $copy->hAlign = $hAlign;
+        return $copy;
     }
 
     /**
@@ -158,11 +167,12 @@ class Imagor
      */
     public function vAlign(string $vAlign): self
     {
+        $copy = clone $this;
         if (!in_array($vAlign, ['top', 'bottom', 'middle'])) {
             throw new RuntimeException('Unsupported vAlign: ' . $vAlign);
         }
-        $this->vAlign = $vAlign;
-        return $this;
+        $copy->vAlign = $vAlign;
+        return $copy;
     }
 
     /**
@@ -172,8 +182,9 @@ class Imagor
      */
     public function smart(): self
     {
-        $this->smart = true;
-        return $this;
+        $copy = clone $this;
+        $copy->smart = true;
+        return $copy;
     }
 
     /**
@@ -183,8 +194,9 @@ class Imagor
      */
     public function addFilter(string $filterName, ...$args): self
     {
-        $this->filters[] = $filterName . '(' . implode(',', $args) . ')';
-        return $this;
+        $copy = clone $this;
+        $copy->filters[] = $filterName . '(' . implode(',', $args) . ')';
+        return $copy;
     }
 
     /**

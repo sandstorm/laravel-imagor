@@ -4,6 +4,7 @@ namespace Sandstorm\LaravelImagor;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Workbench\App\Console\BenchmarkImageSizes;
 
 /**
  * @internal
@@ -15,6 +16,7 @@ class ImagorServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-imagor')
             ->hasConfigFile('imagor')
+            ->hasConsoleCommand(BenchmarkImageSizes::class)
             ->hasRoute('web');
     }
 

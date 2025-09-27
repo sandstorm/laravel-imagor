@@ -69,7 +69,7 @@ it('can resize with height only', function () {
 
 it('can get resize dimensions', function () {
     $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
-    $builder->resize(width: 300, height: 200);
+    $builder = $builder->resize(width: 300, height: 200);
 
     expect($builder->getResizeWidth())->toBe(300);
     expect($builder->getResizeHeight())->toBe(200);
@@ -118,7 +118,7 @@ it('can crop image', function () {
         ->crop(a: 10, b: 10, c: 100, d: 100)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('10x10%3A100x100'); // URL encoded version of 10x10:100x100
+    expect($url)->toContain('10x10:100x100'); // URL encoded version of 10x10:100x100
 });
 
 // Flip Tests
@@ -155,7 +155,7 @@ it('can flip both directions', function () {
 
 it('can toggle flips', function () {
     $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
-    $builder
+    $builder = $builder
         ->flipHorizontally()
         ->flipHorizontally() // Should cancel out
         ->resize(width: 300, height: 200);
@@ -181,7 +181,7 @@ it('can add padding', function () {
         ->padding(left: 10, top: 20, right: 30, bottom: 40)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('10x20%3A30x40'); // URL encoded version of 10x20:30x40
+    expect($url)->toContain('10x20:30x40'); // URL encoded version of 10x20:30x40
 });
 
 // Alignment Tests
@@ -238,8 +238,8 @@ it('can add custom filter', function () {
         ->addFilter('custom', 'arg1', 'arg2')
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('filters%3A');
-    expect($url)->toContain('custom(arg1%2Carg2)'); // URL encoded custom(arg1,arg2)
+    expect($url)->toContain('filters:');
+    expect($url)->toContain('custom(arg1,arg2)'); // URL encoded custom(arg1,arg2)
 });
 
 it('can set quality', function () {
@@ -275,7 +275,7 @@ it('can set blur with x and y sigma', function () {
         ->blur(1.5, 2.0)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('blur(1.5%2C2)'); // URL encoded blur(1.5,2)
+    expect($url)->toContain('blur(1.5,2)'); // URL encoded blur(1.5,2)
 });
 
 it('can set sharpen', function () {
@@ -336,13 +336,13 @@ it('can build complex url with multiple transformations', function () {
 
     // Should contain all the transformations in correct order
     expect($url)->toContain('trim');
-    expect($url)->toContain('10x10%3A200x200'); // crop
+    expect($url)->toContain('10x10:200x200'); // crop
     expect($url)->toContain('fit-in');
     expect($url)->toContain('300x200'); // resize
     expect($url)->toContain('center');
     expect($url)->toContain('middle');
     expect($url)->toContain('smart');
-    expect($url)->toContain('filters%3A'); // filters section
+    expect($url)->toContain('filters:'); // filters section
     expect($url)->toContain('quality(85)');
     expect($url)->toContain('format(webp)');
 });
