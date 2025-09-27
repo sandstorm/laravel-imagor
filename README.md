@@ -50,7 +50,7 @@ This part of the guide assumes you deploy your Laravel application and imagor us
 You can use the [official Imagor Docker image](https://hub.docker.com/r/cshum/imagor) to run Imagor, but this
 does NOT contain mozjpeg; so that means the JPEGs could be a bit smaller file-size wise.
 
-**Our recommendation is to use [docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg](https://docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg), which contains mozjpeg and is thus outputting smaller JPEG files.**
+**Our recommendation is to use `docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg`, which contains mozjpeg and is thus outputting smaller JPEG files.**
 
 See https://gitlab.sandstorm.de/docker-infrastructure/imagor/container_registry for the currently built versions.
 

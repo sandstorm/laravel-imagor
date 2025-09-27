@@ -10,6 +10,11 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Sebastian Kurfuerst",
+            "email": "sebastian.kurfuerst@sandstorm.de",
+            "role": "Developer"
+        },
+        {
             "name": "Imam Susanto",
             "email": "abc.imams@gmail.com",
             "role": "Developer"
