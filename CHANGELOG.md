@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-imgproxy` will be documented in this file.
 
+## v1.0.0 (IMAGOR / Sandstorm) - 2025-09-27
+
+Initial release of the Imagor version (forked off)
+
 ## v0.4.0 - 2025-07-18
 
 ### 🚀 Major Features
