@@ -9,8 +9,12 @@ services:
     env_file:
       - './imagor_docker/imagor.env'
     environment:
+      DEBUG: 1
+
       TZ: 'Europe/Berlin'
       IMAGOR_AUTO_WEBP: 1
+
+      FILE_SAFE_CHARS: --
       FILE_RESULT_STORAGE_EXPIRATION: 6h
       FILE_STORAGE_EXPIRATION: 6h
 

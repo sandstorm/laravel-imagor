@@ -237,22 +237,22 @@ class Imagor
     public function uriFor(string $sourceImage): string
     {
         $sourceImage = $this->resolveTargetPath($sourceImage);
-        $decodedPathSegments = [];
+        $pathSegments = [];
 
         if ($this->trim) {
-            $decodedPathSegments[] = 'trim';
+            $pathSegments[] = 'trim';
         }
         if ($this->crop !== null) {
-            $decodedPathSegments[] = $this->crop;
+            $pathSegments[] = $this->crop;
         }
         if ($this->fitIn) {
-            $decodedPathSegments[] = 'fit-in';
+            $pathSegments[] = 'fit-in';
         }
         if ($this->stretch) {
-            $decodedPathSegments[] = 'stretch';
+            $pathSegments[] = 'stretch';
         }
         if ($this->resizeWidth !== 0 || $this->resizeHeight !== 0 || $this->flipVertically || $this->flipHorizontally) {
-            $decodedPathSegments[] = sprintf(
+            $pathSegments[] = sprintf(
                 '%s%dx%s%d',
                 $this->flipVertically ? '-' : '',
                 $this->resizeWidth,
@@ -261,32 +261,29 @@ class Imagor
             );
         }
         if ($this->padding !== null) {
-            $decodedPathSegments[] = $this->padding;
+            $pathSegments[] = $this->padding;
         }
         if ($this->hAlign !== null) {
-            $decodedPathSegments[] = $this->hAlign;
+            $pathSegments[] = $this->hAlign;
         }
         if ($this->vAlign !== null) {
-            $decodedPathSegments[] = $this->vAlign;
+            $pathSegments[] = $this->vAlign;
         }
         if ($this->smart) {
-            $decodedPathSegments[] = 'smart';
+            $pathSegments[] = 'smart';
         }
 
         if (!empty($this->filters)) {
-            $decodedPathSegments[] = 'filters:' . implode(':', $this->filters);
+            $pathSegments[] = 'filters:' . implode(':', $this->filters);
         }
 
         // eg example.net/kisten-trippel_3_kw%282%29.jpg
         $sourcePath = ltrim($sourceImage, '/');
 
-        $decodedPathSegments[] = $sourcePath;
-        $encodedPathSegments = array_map(function ($segment) {
-            return self::encodeURIComponent($segment);
-        }, $decodedPathSegments);
+        $pathSegments[] = self::encodeURIComponent($sourcePath);
 
 
-        $encodedPath = implode('/', $encodedPathSegments);
+        $encodedPath = implode('/', $pathSegments);
 
         // eg N…mVw/30x40%3A100x150%2Ffilters%3Afill%28cyan%29/example.net/kisten-trippel_3_kw%282%29.jpg
         return rtrim($this->baseUrl, '/') . '/' . $this->hmac($encodedPath) . "/" . $encodedPath;
