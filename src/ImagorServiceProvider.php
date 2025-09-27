@@ -16,8 +16,12 @@ class ImagorServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-imagor')
             ->hasConfigFile('imagor')
-            ->hasConsoleCommand(BenchmarkImageSizes::class)
             ->hasRoute('web');
+
+        if (class_exists(BenchmarkImageSizes::class)) {
+            // only for workspace mode (composer start)
+            $package->hasConsoleCommand(BenchmarkImageSizes::class);
+        }
     }
 
     public function register()
