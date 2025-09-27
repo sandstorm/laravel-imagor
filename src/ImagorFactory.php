@@ -4,6 +4,9 @@ namespace Sandstorm\LaravelImagor;
 
 final readonly class ImagorFactory
 {
+    /**
+     * @internal
+     */
     public function __construct(
         private string      $baseUrl,
         private string|null $signerType,
@@ -17,8 +20,11 @@ final readonly class ImagorFactory
     {
     }
 
-    public function new(): ImagorPathBuilder
+    /**
+     * @api
+     */
+    public function new(): Imagor
     {
-        return new ImagorPathBuilder($this->baseUrl, $this->signerType, $this->secret, $this->signerTruncate, $this->pathMap);
+        return new Imagor($this->baseUrl, $this->signerType, $this->secret, $this->signerTruncate, $this->pathMap);
     }
 }

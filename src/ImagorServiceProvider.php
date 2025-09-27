@@ -5,6 +5,9 @@ namespace Sandstorm\LaravelImagor;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
+/**
+ * @internal
+ */
 class ImagorServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void

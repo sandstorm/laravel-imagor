@@ -4,7 +4,10 @@ namespace Sandstorm\LaravelImagor;
 
 use RuntimeException;
 
-class ImagorPathBuilder
+/**
+ * @api
+ */
+class Imagor
 {
     private bool $trim = false;
     private ?string $crop = null;

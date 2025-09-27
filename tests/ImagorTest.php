@@ -2,7 +2,7 @@
 
 namespace Sandstorm\LaravelImagor\Tests;
 
-use Sandstorm\LaravelImagor\ImagorPathBuilder;
+use Sandstorm\LaravelImagor\Imagor;
 use RuntimeException;
 
 beforeEach(function () {
@@ -15,7 +15,7 @@ beforeEach(function () {
 
 // Basic URL Generation Tests
 it('can generate signed url with basic resize', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->resize(width: 300, height: 200)
         ->uriFor($this->sample_image_url);
@@ -26,7 +26,7 @@ it('can generate signed url with basic resize', function () {
 });
 
 it('can generate unsafe url when no secret provided', function () {
-    $builder = new ImagorPathBuilder($this->base_url, null, null, null);
+    $builder = new Imagor($this->base_url, null, null, null);
     $url = $builder
         ->resize(width: 300, height: 200)
         ->uriFor($this->sample_image_url);
@@ -36,7 +36,7 @@ it('can generate unsafe url when no secret provided', function () {
 });
 
 it('can generate url with truncated signature', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, 20);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, 20);
     $url = $builder
         ->resize(width: 300, height: 200)
         ->uriFor($this->sample_image_url);
@@ -50,7 +50,7 @@ it('can generate url with truncated signature', function () {
 
 // Resize Tests
 it('can resize with width only', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->resize(width: 300)
         ->uriFor($this->sample_image_url);
@@ -59,7 +59,7 @@ it('can resize with width only', function () {
 });
 
 it('can resize with height only', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->resize(height: 200)
         ->uriFor($this->sample_image_url);
@@ -68,7 +68,7 @@ it('can resize with height only', function () {
 });
 
 it('can get resize dimensions', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $builder->resize(width: 300, height: 200);
 
     expect($builder->getResizeWidth())->toBe(300);
@@ -77,7 +77,7 @@ it('can get resize dimensions', function () {
 
 // Fit-in and Stretch Tests
 it('can use fit-in mode', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->fitIn()
         ->resize(width: 300, height: 200)
@@ -88,7 +88,7 @@ it('can use fit-in mode', function () {
 });
 
 it('can use stretch mode', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->stretch()
         ->resize(width: 300, height: 200)
@@ -99,7 +99,7 @@ it('can use stretch mode', function () {
 });
 
 it('can combine fit-in and stretch', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->fitIn()
         ->stretch()
@@ -113,7 +113,7 @@ it('can combine fit-in and stretch', function () {
 
 // Crop Tests
 it('can crop image', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->crop(a: 10, b: 10, c: 100, d: 100)
         ->uriFor($this->sample_image_url);
@@ -123,7 +123,7 @@ it('can crop image', function () {
 
 // Flip Tests
 it('can flip horizontally', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->flipHorizontally()
         ->resize(width: 300, height: 200)
@@ -133,7 +133,7 @@ it('can flip horizontally', function () {
 });
 
 it('can flip vertically', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->flipVertically()
         ->resize(width: 300, height: 200)
@@ -143,7 +143,7 @@ it('can flip vertically', function () {
 });
 
 it('can flip both directions', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->flipHorizontally()
         ->flipVertically()
@@ -154,7 +154,7 @@ it('can flip both directions', function () {
 });
 
 it('can toggle flips', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $builder
         ->flipHorizontally()
         ->flipHorizontally() // Should cancel out
@@ -166,7 +166,7 @@ it('can toggle flips', function () {
 
 // Trim Test
 it('can trim image', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->trim()
         ->uriFor($this->sample_image_url);
@@ -176,7 +176,7 @@ it('can trim image', function () {
 
 // Padding Tests
 it('can add padding', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->padding(left: 10, top: 20, right: 30, bottom: 40)
         ->uriFor($this->sample_image_url);
@@ -186,7 +186,7 @@ it('can add padding', function () {
 
 // Alignment Tests
 it('can set horizontal alignment', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
 
     foreach (['left', 'center', 'right'] as $alignment) {
         $url = $builder->hAlign($alignment)->uriFor($this->sample_image_url);
@@ -195,7 +195,7 @@ it('can set horizontal alignment', function () {
 });
 
 it('can set vertical alignment', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
 
     foreach (['top', 'middle', 'bottom'] as $alignment) {
         $url = $builder->vAlign($alignment)->uriFor($this->sample_image_url);
@@ -204,7 +204,7 @@ it('can set vertical alignment', function () {
 });
 
 it('throws exception for invalid horizontal alignment', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
 
     expect(function () use ($builder) {
         $builder->hAlign('invalid');
@@ -212,7 +212,7 @@ it('throws exception for invalid horizontal alignment', function () {
 });
 
 it('throws exception for invalid vertical alignment', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
 
     expect(function () use ($builder) {
         $builder->vAlign('invalid');
@@ -221,7 +221,7 @@ it('throws exception for invalid vertical alignment', function () {
 
 // Smart Crop Test
 it('can use smart crop', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->smart()
         ->resize(width: 300, height: 200)
@@ -233,7 +233,7 @@ it('can use smart crop', function () {
 
 // Filter Tests
 it('can add custom filter', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->addFilter('custom', 'arg1', 'arg2')
         ->uriFor($this->sample_image_url);
@@ -243,7 +243,7 @@ it('can add custom filter', function () {
 });
 
 it('can set quality', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->quality(85)
         ->uriFor($this->sample_image_url);
@@ -252,7 +252,7 @@ it('can set quality', function () {
 });
 
 it('can set format', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
 
     foreach (['jpeg', 'png', 'gif', 'webp', 'avif', 'jxl', 'tiff', 'jp2'] as $format) {
         $url = $builder->format($format)->uriFor($this->sample_image_url);
@@ -261,7 +261,7 @@ it('can set format', function () {
 });
 
 it('can set blur with single sigma', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->blur(1.5)
         ->uriFor($this->sample_image_url);
@@ -270,7 +270,7 @@ it('can set blur with single sigma', function () {
 });
 
 it('can set blur with x and y sigma', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->blur(1.5, 2.0)
         ->uriFor($this->sample_image_url);
@@ -279,7 +279,7 @@ it('can set blur with x and y sigma', function () {
 });
 
 it('can set sharpen', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->sharpen(0.5)
         ->uriFor($this->sample_image_url);
@@ -288,7 +288,7 @@ it('can set sharpen', function () {
 });
 
 it('can set saturation', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->saturation(120)
         ->uriFor($this->sample_image_url);
@@ -297,7 +297,7 @@ it('can set saturation', function () {
 });
 
 it('can set brightness', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->brightness(10)
         ->uriFor($this->sample_image_url);
@@ -306,7 +306,7 @@ it('can set brightness', function () {
 });
 
 it('can set contrast', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->contrast(110)
         ->uriFor($this->sample_image_url);
@@ -316,7 +316,7 @@ it('can set contrast', function () {
 
 // Complex Integration Tests
 it('can build complex url with multiple transformations', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->trim()
         ->crop(a: 10, b: 10, c: 200, d: 200)
@@ -349,7 +349,7 @@ it('can build complex url with multiple transformations', function () {
 
 // Path Order Tests
 it('builds path segments in correct order', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->trim()
         ->crop(a: 0, b: 0, c: 100, d: 100)
@@ -386,7 +386,7 @@ it('builds path segments in correct order', function () {
 
 // Edge Cases
 it('handles empty resize dimensions', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->resize(width: 0, height: 0)
         ->quality(85)
@@ -399,7 +399,7 @@ it('handles empty resize dimensions', function () {
 
 it('handles special characters in source URL', function () {
     $specialUrl = 'https://example.com/image with spaces & special chars.jpg';
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
     $url = $builder
         ->resize(width: 300)
         ->uriFor($specialUrl);
@@ -410,14 +410,14 @@ it('handles special characters in source URL', function () {
 
 // Method Chaining Tests
 it('maintains fluent interface', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
 
     $result = $builder
         ->trim()
         ->resize(width: 300)
         ->quality(85);
 
-    expect($result)->toBeInstanceOf(ImagorPathBuilder::class);
+    expect($result)->toBeInstanceOf(Imagor::class);
 });
 
 // Performance Test
@@ -426,7 +426,7 @@ it('can generate multiple urls efficiently', function () {
     $urls = [];
 
     for ($i = 0; $i < 100; $i++) {
-        $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+        $builder = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
         $urls[] = $builder
             ->resize(width: 300 + $i, height: 200 + $i)
             ->quality(80 + ($i % 20))
@@ -441,8 +441,8 @@ it('can generate multiple urls efficiently', function () {
 
 // State Isolation Tests
 it('maintains independent state between instances', function () {
-    $builder1 = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
-    $builder2 = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder1 = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
+    $builder2 = new Imagor($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
 
     $url1 = $builder1->resize(width: 300)->uriFor($this->sample_image_url);
     $url2 = $builder2->resize(width: 500)->uriFor($this->sample_image_url);

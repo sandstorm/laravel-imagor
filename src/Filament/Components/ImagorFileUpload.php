@@ -8,11 +8,11 @@ use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Facades\Storage;
 use Sandstorm\LaravelImagor\ImagorFactory;
-use Sandstorm\LaravelImagor\ImagorPathBuilder;
+use Sandstorm\LaravelImagor\Imagor;
 
 class ImagorFileUpload extends FileUpload
 {
-    protected Closure|ImagorPathBuilder|null $imageProcessor = null;
+    protected Closure|Imagor|null $imageProcessor = null;
 
     protected function setUp(): void
     {
@@ -39,7 +39,7 @@ class ImagorFileUpload extends FileUpload
     }
 
 
-    public function imageProcessor(Closure|ImagorPathBuilder|null $imageProcessor): static
+    public function imageProcessor(Closure|Imagor|null $imageProcessor): static
     {
         $this->imageProcessor = $imageProcessor;
 

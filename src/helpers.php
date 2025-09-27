@@ -1,10 +1,10 @@
 <?php
 
 use Sandstorm\LaravelImagor\ImagorFactory;
-use Sandstorm\LaravelImagor\ImagorPathBuilder;
+use Sandstorm\LaravelImagor\Imagor;
 
 if (! function_exists('imagor')) {
-    function imagor(): ImagorPathBuilder
+    function imagor(): Imagor
     {
         return app(ImagorFactory::class)->new();
     }
