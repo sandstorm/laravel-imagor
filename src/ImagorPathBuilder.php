@@ -276,24 +276,25 @@ class ImagorPathBuilder
 
         // eg example.net/kisten-trippel_3_kw%282%29.jpg
         $sourcePath = ltrim($sourceImage, '/');
-        $encodedSourcePath = urlencode(urlencode($sourcePath));
-        // eg 30x40%3A100x150%2Ffilters%3Afill%28cyan%29
+
+        $decodedPathSegments[] = $sourcePath;
         $encodedPathSegments = array_map(function ($segment) {
-            return urlencode($segment);
+            return self::encodeURIComponent($segment);
         }, $decodedPathSegments);
-        $encodedPathSegments[] = $encodedSourcePath;
-        // eg 30x40%3A100x150%2Ffilters%3Afill%28cyan%29/example.net/kisten-trippel_3_kw%282%29.jpg
+
+
         $encodedPath = implode('/', $encodedPathSegments);
 
-        // eg example.net/kisten-trippel_3_kw(2).jpg
-        $sourcePathDecoded = urldecode($encodedSourcePath);
-        $decodedPathSegments[] = $sourcePathDecoded;
-        // eg 30x40:100x150/filters:fill(cyan)/example.net/kisten-trippel_3_kw(2).jpg
-        $decodedPath = implode('/', $decodedPathSegments);
-
         // eg N…mVw/30x40%3A100x150%2Ffilters%3Afill%28cyan%29/example.net/kisten-trippel_3_kw%282%29.jpg
-        return rtrim($this->baseUrl, '/') . '/' . $this->hmac($decodedPath) . "/" . $encodedPath;
+        return rtrim($this->baseUrl, '/') . '/' . $this->hmac($encodedPath) . "/" . $encodedPath;
     }
+
+    // Equivalent of JavaScript encodeURIComponent in PHP
+    private static function encodeURIComponent($str) {
+        $revert = ['%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')'];
+        return strtr(rawurlencode($str), $revert);
+    }
+
 
     private function hmac(string $path): string
     {
