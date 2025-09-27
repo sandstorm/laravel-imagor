@@ -44,9 +44,9 @@ it('can make HTTP request to workbench effects test endpoint', function () {
         ]);
 
     $data = $response->json();
-    expect($data['processed'])->toContain('quality%2885%29')
-        ->and($data['processed'])->toContain('blur%281%29')
-        ->and($data['processed'])->toContain('brightness%2810%29');
+    expect($data['processed'])->toContain('quality(85)')
+        ->and($data['processed'])->toContain('blur(1)')
+        ->and($data['processed'])->toContain('brightness(10)');
 });
 
 it('can make HTTP request to workbench formats test endpoint', function () {

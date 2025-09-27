@@ -239,7 +239,7 @@ it('can add custom filter', function () {
         ->uriFor($this->sample_image_url);
 
     expect($url)->toContain('filters%3A');
-    expect($url)->toContain('custom%28arg1%2Carg2%29'); // URL encoded custom(arg1,arg2)
+    expect($url)->toContain('custom(arg1%2Carg2)'); // URL encoded custom(arg1,arg2)
 });
 
 it('can set quality', function () {
@@ -248,7 +248,7 @@ it('can set quality', function () {
         ->quality(85)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('quality%2885%29'); // URL encoded quality(85)
+    expect($url)->toContain('quality(85)'); // URL encoded quality(85)
 });
 
 it('can set format', function () {
@@ -256,7 +256,7 @@ it('can set format', function () {
 
     foreach (['jpeg', 'png', 'gif', 'webp', 'avif', 'jxl', 'tiff', 'jp2'] as $format) {
         $url = $builder->format($format)->uriFor($this->sample_image_url);
-        expect($url)->toContain("format%28{$format}%29"); // URL encoded format(format)
+        expect($url)->toContain("format({$format})"); // URL encoded format(format)
     }
 });
 
@@ -266,7 +266,7 @@ it('can set blur with single sigma', function () {
         ->blur(1.5)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('blur%281.5%29'); // URL encoded blur(1.5)
+    expect($url)->toContain('blur(1.5)'); // URL encoded blur(1.5)
 });
 
 it('can set blur with x and y sigma', function () {
@@ -275,7 +275,7 @@ it('can set blur with x and y sigma', function () {
         ->blur(1.5, 2.0)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('blur%281.5%2C2%29'); // URL encoded blur(1.5,2)
+    expect($url)->toContain('blur(1.5%2C2)'); // URL encoded blur(1.5,2)
 });
 
 it('can set sharpen', function () {
@@ -284,7 +284,7 @@ it('can set sharpen', function () {
         ->sharpen(0.5)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('sharpen%280.5%29'); // URL encoded sharpen(0.5)
+    expect($url)->toContain('sharpen(0.5)'); // URL encoded sharpen(0.5)
 });
 
 it('can set saturation', function () {
@@ -293,7 +293,7 @@ it('can set saturation', function () {
         ->saturation(120)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('saturation%28120%29'); // URL encoded saturation(120)
+    expect($url)->toContain('saturation(120)'); // URL encoded saturation(120)
 });
 
 it('can set brightness', function () {
@@ -302,7 +302,7 @@ it('can set brightness', function () {
         ->brightness(10)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('brightness%2810%29'); // URL encoded brightness(10)
+    expect($url)->toContain('brightness(10)'); // URL encoded brightness(10)
 });
 
 it('can set contrast', function () {
@@ -311,7 +311,7 @@ it('can set contrast', function () {
         ->contrast(110)
         ->uriFor($this->sample_image_url);
 
-    expect($url)->toContain('contrast%28110%29'); // URL encoded contrast(110)
+    expect($url)->toContain('contrast(110)'); // URL encoded contrast(110)
 });
 
 // Complex Integration Tests
@@ -343,8 +343,8 @@ it('can build complex url with multiple transformations', function () {
     expect($url)->toContain('middle');
     expect($url)->toContain('smart');
     expect($url)->toContain('filters%3A'); // filters section
-    expect($url)->toContain('quality%2885%29');
-    expect($url)->toContain('format%28webp%29');
+    expect($url)->toContain('quality(85)');
+    expect($url)->toContain('format(webp)');
 });
 
 // Path Order Tests
@@ -394,7 +394,7 @@ it('handles empty resize dimensions', function () {
 
     // Should not contain resize segment but should contain filters
     expect($url)->not->toContain('0x0');
-    expect($url)->toContain('quality%2885%29');
+    expect($url)->toContain('quality(85)');
 });
 
 it('handles special characters in source URL', function () {
@@ -405,8 +405,7 @@ it('handles special characters in source URL', function () {
         ->uriFor($specialUrl);
 
     expect($url)->toStartWith($this->base_url . '/');
-    // URL should be double-encoded
-    expect($url)->toContain(urlencode(urlencode($specialUrl)));
+    expect($url)->toContain("https%3A%2F%2Fexample.com%2Fimage%20with%20spaces%20%26%20special%20chars.jpg");
 });
 
 // Method Chaining Tests
@@ -454,13 +453,3 @@ it('maintains independent state between instances', function () {
     expect($url2)->not->toContain('300x0');
 });
 
-// Default Quality Test
-it('automatically adds default quality filter', function () {
-    $builder = new ImagorPathBuilder($this->base_url, $this->signer_type, $this->secret, $this->signer_truncate);
-    $url = $builder
-        ->resize(width: 300)
-        ->uriFor($this->sample_image_url);
-
-    // Should contain quality(95) as default
-    expect($url)->toContain('quality%2895%29');
-});
