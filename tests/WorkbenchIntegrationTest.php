@@ -2,9 +2,8 @@
 
 namespace Sandstorm\LaravelImagor\Tests;
 
-use Sandstorm\LaravelImagor\Enums\OutputExtension;
-use Sandstorm\LaravelImagor\Enums\ResizeType;
-use Sandstorm\LaravelImagor\Facades\ImgProxy;
+use Sandstorm\LaravelImagor\Imagor;
+use Sandstorm\LaravelImagor\ImagorFactory;
 
 beforeEach(function () {
     $this->sampleImageUrl = 'https://picsum.photos/800/600';
@@ -116,3 +115,17 @@ it('has imagor helper function available in workbench', function () {
     expect(function_exists('imagor'))->toBeTrue();
 });
 
+
+it('imagorFactory is singleton', function () {
+    $imagorFactory1 = $this->app->get(ImagorFactory::class);
+    $imagorFactory2 = $this->app->get(ImagorFactory::class);
+
+    expect($imagorFactory1)->toBe($imagorFactory2);
+});
+
+it('imagor object is prototype, and is resolvable through DI', function () {
+    $imagor1 = $this->app->get(Imagor::class);
+    $imagor2 = $this->app->get(Imagor::class);
+
+    expect($imagor1)->not->toBe($imagor2);
+});

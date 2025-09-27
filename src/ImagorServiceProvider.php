@@ -22,7 +22,6 @@ class ImagorServiceProvider extends PackageServiceProvider
     {
         parent::register();
 
-        // Bind a fresh configured ImagorPathBuilder for each resolution
         $this->app->scoped(ImagorFactory::class, function ($app) {
             return new ImagorFactory(
                 baseUrl: config('imagor.base_url'),
@@ -31,6 +30,11 @@ class ImagorServiceProvider extends PackageServiceProvider
                 signerTruncate: config('imagor.signer_truncate'),
                 pathMap: config('imagor.path_map'),
             );
+        });
+
+        // Bind a fresh configured Imagor for each resolution
+        $this->app->bind(Imagor::class, function ($app) {
+            return $app->get(ImagorFactory::class)->new();
         });
 
         $this->loadHelpers();

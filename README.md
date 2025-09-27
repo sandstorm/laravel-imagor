@@ -175,6 +175,16 @@ $url1 = $resizeOp->uriFor('https://example.com/image.jpg');
 $url2 = $resizeOp->uriFor('https://example.com/foo.jpg');
 ```
 
+## Accessing the Imagor object
+
+The following methods exist for accessing the Imagor object:
+
+- inject `Sandstorm\LaravelImagor\ImagorFactory`, and call `->new()` to get a new instance of the `Imagor` class
+- inject `Sandstorm\LaravelImagor\Imagor` - you'll get a new instance of the `Imagor` class every time
+- use the `imagor()` helper function
+
+If in doubt, use one of the injections.
+
 ## Resizing & Cropping
 
 ```php
