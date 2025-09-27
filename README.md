@@ -47,7 +47,15 @@ return [
 
 This part of the guide assumes you deploy your Laravel application and imagor using Docker.
 
-We recommend that you use the Docker image at `./imagor_docker` for Imagor deployment.
+You can use the [official Imagor Docker image](https://hub.docker.com/r/cshum/imagor) to run Imagor, but this
+does NOT contain mozjpeg; so that means the JPEGs could be a bit smaller file-size wise.
+
+**Our recommendation is to use [docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg](https://docker-hub.sandstorm.de/docker-infrastructure/imagor:v1.5.16-mozjpeg), which contains mozjpeg and is thus outputting smaller JPEG files.**
+
+See https://gitlab.sandstorm.de/docker-infrastructure/imagor/container_registry for the currently built versions.
+
+> if you want to build the image yourself, see see the [./laravel-imagor](./laravel-imagor) folder which contains the sources
+> of this docker image.
 
 Mount the `./storage` folder of your Laravel application to the same folder in the Imagor container;
 so if the storage folder is located at `/app/storage`, you should mount it to `/app/storage` in the Imagor container

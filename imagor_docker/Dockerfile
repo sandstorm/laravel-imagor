@@ -2,6 +2,8 @@
 ARG GOLANG_VERSION=1.25.1
 FROM golang:${GOLANG_VERSION}-trixie as builder
 
+ARG IMAGOR_TAG=v1.5.16
+
 ARG VIPS_VERSION=8.17.2
 ARG TARGETARCH
 ARG ENABLE_MAGICK=false
@@ -74,7 +76,7 @@ ENV PKG_CONFIG_PATH=/opt/mozjpeg/lib64/pkgconfig/ \
 WORKDIR ${GOPATH}/src/github.com/cshum/imagor
 
 
-RUN git clone https://github.com/cshum/imagor .
+RUN git clone --branch $IMAGOR_TAG https://github.com/cshum/imagor .
 RUN go mod download
 
 
