@@ -176,6 +176,21 @@ $url1 = $resizeOp->uriFor('https://example.com/image.jpg');
 $url2 = $resizeOp->uriFor('https://example.com/foo.jpg');
 ```
 
+NOTE: the `Imagor` class is **immutable**, so you always need to assign the result of a method call to a variable:
+
+```php
+$imagor = imagor();
+
+// ❌ WILL NOT WORK ❌ because a new object is returned
+$imagor->resize(width: 400, height: 300);
+$imagor->uriFor('https://example.com/image.jpg');
+
+// ✅ Instead, do the following:
+$imagor = $imagor->resize(width: 400, height: 300);
+$imagor->uriFor('https://example.com/image.jpg');
+```
+
+
 ## Accessing the Imagor object
 
 The following methods exist for accessing the Imagor object:
