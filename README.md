@@ -73,7 +73,8 @@ services:
     volumes:
       - laravel-storage:/app/storage
     environment:
-      IMAGOR_BASE_URL: http://imagor:8091
+      IMAGOR_PUBLIC_BASE_URL: http://127.0.0.1:8091
+      IMAGOR_INTERNAL_BASE_URL: http://imagor:8091
       IMAGOR_SECRET: UNSAFE_DEV_SECRET
       IMAGOR_SIGNER_TYPE: sha256
       IMAGOR_SIGNER_TRUNCATE: 40
@@ -280,6 +281,20 @@ $url = imagor()
     ->hAlign('left')         // 'left', 'right', 'center'
     ->vAlign('top')          // 'top', 'bottom', 'middle'
     ->uriFor($imageUrl);
+```
+
+## Accessing the image binary data
+
+If, for some reason, you need to access the image binary data, you can use `->imageBinaryDataFor()` instead of
+`->uriFor()`:
+
+```
+$binaryData = imagor()
+    ->resize(width: 400, height: 300)
+    ->format('jpeg')
+    ->imageBinaryDataFor($imageUrl);
+
+echo '<img src="data:image/jpeg;base64,' . base64_encode($binaryData) . '" />';
 ```
 
 # Laravel Integration

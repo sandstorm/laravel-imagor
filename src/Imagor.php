@@ -27,7 +27,8 @@ class Imagor
      * @internal use ImagorFactory::new() instead.
      */
     public function __construct(
-        private readonly string      $baseUrl,
+        private readonly string      $publicBaseUrl,
+        private readonly string      $internalBaseUrl,
         private readonly string|null $signerType,
         private readonly string|null $secret,
         private readonly int|null    $signerTruncate,
@@ -248,6 +249,11 @@ class Imagor
 
     public function uriFor(string $sourceImage): string
     {
+        return $this->uriForWithBaseUrl($sourceImage, $this->publicBaseUrl);
+    }
+
+    private function uriForWithBaseUrl(string $sourceImage, string $baseUrl): string
+    {
         $sourceImage = $this->resolveTargetPath($sourceImage);
         $pathSegments = [];
 
@@ -298,7 +304,13 @@ class Imagor
         $encodedPath = implode('/', $pathSegments);
 
         // eg N…mVw/30x40%3A100x150%2Ffilters%3Afill%28cyan%29/example.net/kisten-trippel_3_kw%282%29.jpg
-        return rtrim($this->baseUrl, '/') . '/' . $this->hmac($encodedPath) . "/" . $encodedPath;
+        return rtrim($baseUrl, '/') . '/' . $this->hmac($encodedPath) . "/" . $encodedPath;
+    }
+
+    public function imageBinaryDataFor(string $sourceImage): string
+    {
+        $imagorUri = $this->uriForWithBaseUrl($sourceImage, $this->internalBaseUrl);
+        return file_get_contents($imagorUri);
     }
 
     // Equivalent of JavaScript encodeURIComponent in PHP

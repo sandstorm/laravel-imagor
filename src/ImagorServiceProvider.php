@@ -30,7 +30,8 @@ class ImagorServiceProvider extends PackageServiceProvider
 
         $this->app->scoped(ImagorFactory::class, function ($app) {
             return new ImagorFactory(
-                baseUrl: config('imagor.base_url'),
+                publicBaseUrl: config('imagor.public_base_url'),
+                internalBaseUrl: config('imagor.internal_base_url'),
                 signerType: config('imagor.signer_type', 'sha256'),
                 secret: config('imagor.secret'),
                 signerTruncate: config('imagor.signer_truncate'),

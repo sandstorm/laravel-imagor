@@ -36,6 +36,11 @@ If the following two images show, laravel-imagor is working:
 (if this image does not show up, ensure that <code>FILE_SAFE_CHARS=--</code> is configured in the Imagor container.)
 </p>
 
+<p>
+- 4) Binary access to image data (via direct server2server call of Imagor)
+<img src="data:image/jpeg;base64,{{ base64_encode(imagor()->resize(width: 100, height: 100)->format('jpeg')->imageBinaryDataFor($simpleImageUrl)) }}" />
+(if this image does not show up, the configuration <code>imagor.internal_base_url</code> aka <code>IMAGOR_INTERNAL_BASE_URL</code> environment is not configured correctly)
+</p>
 
 EOF
         , [

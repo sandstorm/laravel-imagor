@@ -7,7 +7,8 @@ use Sandstorm\LaravelImagor\ImagorFactory;
 
 beforeEach(function () {
     $this->sampleImageUrl = 'https://picsum.photos/800/600';
-    $this->app['config']->set('imagor.base_url', 'http://localhost:8001');
+    $this->app['config']->set('imagor.public_base_url', 'http://localhost:8001');
+    $this->app['config']->set('imagor.internal_base_url', 'http://localhost:8001');
     $this->app['config']->set('imagor.secret', 'UNSAFE_DEV_SECRET');
 });
 

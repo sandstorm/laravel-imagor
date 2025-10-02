@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'base_url' => env('IMAGOR_BASE_URL', 'http://localhost:8001/'),
+    'public_base_url' => env('IMAGOR_PUBLIC_BASE_URL', env('IMAGOR_BASE_URL', 'http://localhost:8001/')),
+    'internal_base_url' => env('IMAGOR_INTERNAL_BASE_URL', env('IMAGOR_BASE_URL', 'http://localhost:8001/')),
 
     // HMAC signature configuration
     // Secret used for signing URLs. If null, ImagorPathBuilder will output 'unsafe'

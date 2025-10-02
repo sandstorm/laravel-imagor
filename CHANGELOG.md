@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-imgproxy` will be documented in this file.
 
+## v1.3.0
+
+- new method `imageBinaryDataFor()` as alternative to `uriFor()`
+- IMAGOR_BASE_URL -> IMAGOR_PUBLIC_BASE_URL (the old one is still supported as fallback)
+- new config option IMAGOR_INTERNAL_BASE_URL (fallback to IMAGOR_BASE_URL if not set)
+
+
 ## v1.2.0
 
 - !!! make Imagor object immutable

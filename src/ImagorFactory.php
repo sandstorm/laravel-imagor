@@ -8,7 +8,8 @@ final readonly class ImagorFactory
      * @internal
      */
     public function __construct(
-        private string      $baseUrl,
+        private string      $publicBaseUrl,
+        private string      $internalBaseUrl,
         private string|null $signerType,
         private string|null $secret,
         private int|null    $signerTruncate,
@@ -25,6 +26,6 @@ final readonly class ImagorFactory
      */
     public function new(): Imagor
     {
-        return new Imagor($this->baseUrl, $this->signerType, $this->secret, $this->signerTruncate, $this->pathMap);
+        return new Imagor($this->publicBaseUrl, $this->internalBaseUrl, $this->signerType, $this->secret, $this->signerTruncate, $this->pathMap);
     }
 }
