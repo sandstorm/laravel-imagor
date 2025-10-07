@@ -5,6 +5,16 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
 Route::get('__imagor-configtest', function () {
+    Blade::directive('trycatch', function () {
+        return '<?php try { ?>';
+    });
+
+    Blade::directive('endtrycatch', function () {
+        return '<?php } catch (\Exception $e) {
+            echo "<div class=\"error\">Error: " . e($e->getMessage()) . "</div>";
+        } ?>';
+    });
+
     Storage::disk('local')->put('__imagor-configtest_test1.jpg', file_get_contents(__DIR__ . '/../test_images/test1.jpg'));
     $simpleImageUrl = Storage::disk('local')->path('__imagor-configtest_test1.jpg');
 
@@ -38,9 +48,12 @@ If the following two images show, laravel-imagor is working:
 
 <p>
 - 4) Binary access to image data (via direct server2server call of Imagor)
+@trycatch
 <img src="data:image/jpeg;base64,{{ base64_encode(imagor()->resize(width: 100, height: 100)->format('jpeg')->imageBinaryDataFor($simpleImageUrl)) }}" />
+@endtrycatch
 (if this image does not show up, the configuration <code>imagor.internal_base_url</code> aka <code>IMAGOR_INTERNAL_BASE_URL</code> environment is not configured correctly)
 </p>
+
 
 EOF
         , [
