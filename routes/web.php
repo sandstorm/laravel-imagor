@@ -21,10 +21,13 @@ Route::get('__imagor-configtest', function () {
     Storage::disk('local')->put('__imagor-configtest_WHukFiPIgKf8LE2UX2Mm5rLXYEJ9cv-metaU0NSLTIwMjUwOTI1LXJvZ2YuanBlZw==-.jpeg', file_get_contents(__DIR__ . '/../test_images/test1.jpg'));
     $tempUploadUrl = Storage::disk('local')->path('__imagor-configtest_WHukFiPIgKf8LE2UX2Mm5rLXYEJ9cv-metaU0NSLTIwMjUwOTI1LXJvZ2YuanBlZw==-.jpeg');
 
-    Storage::disk('local')->put('__imagor-configtest_(name with special - characters?).jpeg', file_get_contents(__DIR__ . '/../test_images/test1.jpg'));
-    $specialCharUrl = Storage::disk('local')->path('__imagor-configtest_(name with special - characters?).jpeg');
+    Storage::disk('local')->put('__imagor-configtest_(ä name with special - characters?).jpeg', file_get_contents(__DIR__ . '/../test_images/test1.jpg'));
+    $specialCharUrl = Storage::disk('local')->path('__imagor-configtest_(ä name with special - characters?).jpeg');
 
     return Blade::render(<<<'EOF'
+
+<h1>Imagor config test (current settings)</h1>
+
 <p>
 If the following two images show, laravel-imagor is working:
 </p>
@@ -53,6 +56,49 @@ If the following two images show, laravel-imagor is working:
 @endtrycatch
 (if this image does not show up, the configuration <code>imagor.internal_base_url</code> aka <code>IMAGOR_INTERNAL_BASE_URL</code> environment is not configured correctly)
 </p>
+
+<h2>finding correct value for config imagor.url_encode_mode</h2>
+
+<p>
+We suggest to use the <b>FIRST row which has all </b> of the following table to find the correct value for <code>imagor.url_encode_mode</code> in your <code>.env</code> file.
+</p>
+<table>
+<tr>
+    <td><code>IMAGOR_URL_ENCODE_MODE</code></td>
+    <td colspan="3">3x test images</td>
+</tr>
+<tr>
+    <td><code>none</code></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('none')->uriFor($simpleImageUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('none')->uriFor($tempUploadUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('none')->uriFor($specialCharUrl) }}" /></td>
+</tr>
+
+<tr>
+    <td><code>urlencode</code></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('urlencode')->uriFor($simpleImageUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('urlencode')->uriFor($tempUploadUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('urlencode')->uriFor($specialCharUrl) }}" /></td>
+</tr>
+<tr>
+    <td><code>base64_if_unsafe_chars</code></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64_if_unsafe_chars')->uriFor($simpleImageUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64_if_unsafe_chars')->uriFor($tempUploadUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64_if_unsafe_chars')->uriFor($specialCharUrl) }}" /></td>
+</tr>
+<tr>
+    <td><code>base64_if_unsafe_chars_conservative</code></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64_if_unsafe_chars_conservative')->uriFor($simpleImageUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64_if_unsafe_chars_conservative')->uriFor($tempUploadUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64_if_unsafe_chars_conservative')->uriFor($specialCharUrl) }}" /></td>
+</tr>
+<tr>
+    <td><code>base64</code></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64')->uriFor($simpleImageUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64')->uriFor($tempUploadUrl) }}" /></td>
+    <td><img src="{{ imagor()->resize(width: 100, height: 100)->urlEncodeMode('base64')->uriFor($specialCharUrl) }}" /></td>
+</tr>
+</table>
 
 
 EOF

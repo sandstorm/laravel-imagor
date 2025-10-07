@@ -32,6 +32,7 @@ class Imagor
         private readonly string|null $signerType,
         private readonly string|null $secret,
         private readonly int|null    $signerTruncate,
+        private UrlEncodeMode        $urlEncodeMode = UrlEncodeMode::URLENCODE,
         private readonly array       $pathMap = [],
     )
     {
@@ -247,6 +248,17 @@ class Imagor
         return $this->addFilter('contrast', $amount);
     }
 
+    public function urlEncodeMode(UrlEncodeMode|string $urlEncodeMode): self
+    {
+        if (is_string($urlEncodeMode)) {
+            $urlEncodeMode = UrlEncodeMode::from($urlEncodeMode);
+        }
+
+        $copy = clone $this;
+        $copy->urlEncodeMode = $urlEncodeMode;
+        return $copy;
+    }
+
     public function uriFor(string $sourceImage): string
     {
         return $this->uriForWithBaseUrl($sourceImage, $this->publicBaseUrl);
@@ -298,8 +310,7 @@ class Imagor
         // eg example.net/kisten-trippel_3_kw%282%29.jpg
         $sourcePath = ltrim($sourceImage, '/');
 
-        $pathSegments[] = self::encodeURIComponent($sourcePath);
-
+        $pathSegments[] = $this->urlEncodeMode->encodeSourcePath($sourcePath);
 
         $encodedPath = implode('/', $pathSegments);
 
@@ -312,13 +323,6 @@ class Imagor
         $imagorUri = $this->uriForWithBaseUrl($sourceImage, $this->internalBaseUrl);
         return file_get_contents($imagorUri);
     }
-
-    // Equivalent of JavaScript encodeURIComponent in PHP
-    private static function encodeURIComponent($str) {
-        $revert = ['%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')'];
-        return strtr(rawurlencode($str), $revert);
-    }
-
 
     private function hmac(string $path): string
     {

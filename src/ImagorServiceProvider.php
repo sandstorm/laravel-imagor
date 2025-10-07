@@ -35,6 +35,7 @@ class ImagorServiceProvider extends PackageServiceProvider
                 signerType: config('imagor.signer_type', 'sha256'),
                 secret: config('imagor.secret'),
                 signerTruncate: config('imagor.signer_truncate'),
+                urlEncodeMode: UrlEncodeMode::fromConfig(config('imagor.url_encode_mode')),
                 pathMap: config('imagor.path_map'),
             );
         });

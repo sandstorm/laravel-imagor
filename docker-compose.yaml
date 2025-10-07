@@ -2,10 +2,10 @@
 
 services:
   imagor:
-    #image: shumc/imagor:latest
+    image: docker-hub.sandstorm.de/docker-infrastructure/imagor:unreleased-pr621-mozjpeg
     #image: ghcr.io/cshum/imagor-mozjpeg:docker-variants@sha256:80637bfd1c5307364c8fca73bf8863a6d29fa06b1e7b9b67eb08962e7331c30e
-    build:
-      context: ./imagor_docker
+    #build:
+    #  context: ./imagor_docker
       # dockerfile: Dockerfile_00_default
       # dockerfile: Dockerfile_02_build_from_imagor_src
     env_file:
